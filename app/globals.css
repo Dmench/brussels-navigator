@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-display: var(--font-outfit), sans-serif;
+  --font-body: var(--font-nunito), sans-serif;
+
+  /* Surface colors */
+  --color-surface-0: #09090B;
+  --color-surface-1: #111113;
+  --color-surface-2: #18181B;
+  --color-surface-3: #1F1F23;
+  --color-surface-4: #27272A;
+
+  /* Border */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.12);
+  --color-border-active: rgba(255, 255, 255, 0.18);
+
+  /* Content (text) */
+  --color-content: #FAFAFA;
+  --color-content-2: #A1A1AA;
+  --color-content-3: #71717A;
+  --color-content-4: #3F3F46;
+  --color-content-5: #27272A;
+
+  /* Amber */
+  --color-amber: #F59E0B;
+  --color-amber-dark: #D97706;
+  --color-amber-soft: rgba(245, 158, 11, 0.08);
+  --color-amber-muted: rgba(245, 158, 11, 0.15);
+  --color-amber-border: rgba(245, 158, 11, 0.2);
+
+  /* Emerald */
+  --color-emerald: #34D399;
+  --color-emerald-soft: rgba(52, 211, 153, 0.08);
+  --color-emerald-border: rgba(52, 211, 153, 0.2);
+
+  /* Sky */
+  --color-sky: #60A5FA;
+  --color-sky-soft: rgba(96, 165, 250, 0.08);
+  --color-sky-border: rgba(96, 165, 250, 0.2);
+
+  /* Rose */
+  --color-rose: #F87171;
+  --color-rose-soft: rgba(248, 113, 113, 0.08);
+  --color-rose-border: rgba(248, 113, 113, 0.2);
+
+  /* Shadows */
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-glow-amber: 0 0 20px -5px rgba(245, 158, 11, 0.15);
+  --shadow-glow-amber-strong: 0 0 30px -5px rgba(245, 158, 11, 0.25);
+
+  /* Animations */
+  --animate-fade-up: fadeUp 0.4s ease both;
+  --animate-fade-in: fadeIn 0.3s ease both;
+  --animate-slide-up: slideUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}

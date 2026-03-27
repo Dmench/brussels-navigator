@@ -3,45 +3,39 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { UserProfile } from '../types'
 
-function useLocalStorage<T>(key: string, defaultValue: T) {
+function usePersisted<T>(key: string, defaultValue: T): [T, (val: T | ((prev: T) => T)) => void] {
   const [value, setValue] = useState<T>(defaultValue)
-  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(key)
-      if (stored !== null) {
-        setValue(JSON.parse(stored) as T)
-      }
+      if (stored !== null) setValue(JSON.parse(stored))
     } catch {}
-    setLoaded(true)
   }, [key])
 
-  const set = useCallback((newValue: T | ((prev: T) => T)) => {
+  const set = useCallback((val: T | ((prev: T) => T)) => {
     setValue(prev => {
-      const next = typeof newValue === 'function' ? (newValue as (prev: T) => T)(prev) : newValue
-      try {
-        localStorage.setItem(key, JSON.stringify(next))
-      } catch {}
+      const next = typeof val === 'function' ? (val as (p: T) => T)(prev) : val
+      try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
       return next
     })
   }, [key])
 
-  return [value, set, loaded] as const
+  return [value, set]
 }
 
 export function useProfile() {
-  return useLocalStorage<UserProfile | null>('user-profile', null)
+  return usePersisted<UserProfile | null>('bn-profile', null)
 }
 
 export function useCurrency() {
-  return useLocalStorage<string>('preferred-currency', 'USD')
+  return usePersisted<string>('bn-currency', 'USD')
 }
 
 export function useChecklist() {
-  return useLocalStorage<string[]>('checklist-completed', [])
+  return usePersisted<string[]>('bn-checklist', [])
 }
 
 export function useWaitlistEmail() {
-  return useLocalStorage<string>('waitlist-email', '')
+  return usePersisted<string>('bn-waitlist-email', '')
 }

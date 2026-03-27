@@ -14,7 +14,7 @@ export function DotRating({ value, max = 5, className }: DotRatingProps) {
           key={i}
           className={cn(
             'w-1.5 h-1.5 rounded-full',
-            i < value ? 'bg-amber' : 'bg-content-5'
+            i < value ? 'bg-terracotta' : 'bg-sand dark:bg-night-2'
           )}
         />
       ))}

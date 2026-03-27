@@ -1,219 +1,217 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { useProfile } from '@/lib/hooks/use-preferences'
+import { useState, useEffect } from 'react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { ArrowRight, CheckSquare, Calendar, MapPin, DollarSign, Home, FileText, Sparkles, Newspaper } from 'lucide-react'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { Footer } from '@/components/layout/Footer'
+import { GUIDES } from '@/lib/guides'
+import { useWeather } from '@/lib/hooks/use-weather'
+import { useRates } from '@/lib/hooks/use-rates'
+import { getWeatherLabel } from '@/lib/constants'
 
-const FEATURES = [
-  { icon: CheckSquare, title: 'Setup Checklist', desc: 'Everything you need to do, in order. Profile-aware tips for EU, non-EU, and students.' },
-  { icon: Newspaper, title: 'This Week', desc: 'Live events, Reddit community digest, and STIB transport alerts — updated daily.' },
-  { icon: Calendar, title: 'Events Calendar', desc: '2026 public holidays and major Brussels events, with live API sync.' },
-  { icon: MapPin, title: 'Neighborhoods', desc: 'Compare 10 communes with expat ratings, avg rents, and vibes.' },
-  { icon: DollarSign, title: 'Cost Estimator', desc: 'Realistic monthly budget with live currency conversion for 12 currencies.' },
-  { icon: Home, title: 'Housing Links', desc: 'All major platforms. Search by commune. Quick Immoweb deep links.' },
-  { icon: FileText, title: 'Letter Templates', desc: 'Fill-in-the-blank letters in English and French for every situation.' },
+const NAV_CARDS = [
+  {
+    label: 'Getting started',
+    title: 'Plan your move',
+    desc: 'Checklist, plan builder, and templates for your first 90 days',
+    href: '/plan',
+  },
+  {
+    label: 'Where to live',
+    title: 'Neighbourhoods',
+    desc: 'Compare the 10 best communes for expats, with rent data and ratings',
+    href: '/neighborhoods',
+  },
+  {
+    label: 'Reading',
+    title: 'Guides',
+    desc: 'In-depth articles on registration, housing, taxes, and immigration',
+    href: '/guides',
+  },
+  {
+    label: 'Brussels now',
+    title: 'This week',
+    desc: 'Events, news, and what is happening in Brussels right now',
+    href: '/events',
+  },
 ]
 
-const PROFILE_CARDS = [
-  { id: 'eu' as const, label: 'EU Professional', desc: 'EU citizen working in Brussels', icon: '💼' },
-  { id: 'non-eu' as const, label: 'Non-EU Professional', desc: 'Work permit holder or relocating expat', icon: '🌍' },
-  { id: 'student' as const, label: 'Student / Trainee', desc: 'Studying or interning in Brussels', icon: '🎓' },
-]
+function WeatherCurrencyStrip() {
+  const { data: weather } = useWeather()
+  const { data: rates } = useRates()
+  const [mounted, setMounted] = useState(false)
 
-export default function LandingPage() {
-  const [email, setEmail] = useState('')
-  const [emailSaved, setEmailSaved] = useState(false)
-  const [, setProfile] = useProfile()
+  useEffect(() => { setMounted(true) }, [])
 
-  function saveEmail() {
-    if (email) {
-      try { localStorage.setItem('waitlist-email', email) } catch {}
-      setEmailSaved(true)
-    }
+  if (!mounted) return null
+
+  const parts: string[] = []
+  if (weather) {
+    parts.push(`Brussels ${weather.temperature}°C · ${getWeatherLabel(weather.weathercode)}`)
   }
+  if (rates?.rates.USD) {
+    parts.push(`1 EUR = ${rates.rates.USD.toFixed(2)} USD`)
+  }
+  if (!parts.length) return null
 
   return (
-    <div className="min-h-screen bg-surface-0 text-content font-body relative overflow-hidden">
-      {/* Ambient gradients */}
-      <div className="fixed top-0 right-0 w-96 h-96 opacity-5 pointer-events-none" style={{ background: 'radial-gradient(circle, #F59E0B 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
-      <div className="fixed bottom-0 left-0 w-96 h-96 opacity-5 pointer-events-none" style={{ background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', transform: 'translate(-30%, 30%)' }} />
+    <p className="text-sm font-body text-walnut dark:text-night-muted">
+      {parts.map((p, i) => (
+        <span key={i}>
+          {i > 0 && <span className="mx-3 text-stone dark:text-night-border">·</span>}
+          {p}
+        </span>
+      ))}
+    </p>
+  )
+}
 
+export default function LandingPage() {
+  const featuredGuide = GUIDES[0]
+
+  return (
+    <div className="min-h-screen bg-cream dark:bg-night text-espresso dark:text-night-text font-body">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-surface-1/80 backdrop-blur-xl border-b border-border h-13 flex items-center px-4 lg:px-8">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg border border-amber-border bg-amber-soft flex items-center justify-center text-base shadow-glow-amber">
-            🇧🇪
-          </div>
-          <span className="font-display font-bold text-base text-content">Brussels Navigator</span>
-        </div>
-        <div className="ml-auto">
-          <Link href="/home" className="text-sm text-content-3 hover:text-content transition-colors px-3 py-1.5">
-            Open App →
+      <header className="sticky top-0 z-50 h-16 bg-cream/90 dark:bg-night/90 backdrop-blur-xl border-b border-sand/50 dark:border-night-border flex items-center px-6 md:px-8">
+        <span className="font-display font-semibold text-lg text-ink dark:text-night-text tracking-tight flex-1">
+          Brussels Navigator
+        </span>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/plan"
+            className="hidden sm:block text-sm font-body text-walnut hover:text-espresso dark:text-night-muted dark:hover:text-night-text transition-colors"
+          >
+            Get started
           </Link>
+          <ThemeToggle />
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-16 lg:py-24">
+      <main>
         {/* Hero */}
-        <section className="text-center mb-20 animate-fade-up">
-          <Badge variant="amber" className="mb-4">Free tool · No sign-up required</Badge>
-          <h1 className="text-4xl lg:text-6xl font-display font-extrabold text-content leading-tight mb-4">
-            Your first 90 days<br />in Brussels — and every day after.
-          </h1>
-          <p className="text-lg text-content-3 mb-2">One place. No chaos.</p>
-          <p className="text-sm text-content-4 mb-8 max-w-md mx-auto">
-            The complete guide for expats: what to do, how much it costs, and where to live.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/plan">
-              <Button size="lg" className="flex items-center gap-2">
-                Build My Brussels Plan <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-            <Link href="/home">
-              <Button variant="ghost" size="lg">
-                Explore the tool
-              </Button>
-            </Link>
+        <section className="max-w-6xl mx-auto px-6 md:px-8 pt-20 md:pt-32 pb-16 md:pb-24">
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-ink dark:text-night-text tracking-tight leading-[0.95] mb-8">
+              Your guide<br />to Brussels.
+            </h1>
+            <p className="text-base md:text-lg font-body font-light text-walnut dark:text-night-muted leading-relaxed max-w-xl mb-10">
+              Everything you need to move to, settle in, and enjoy living in Brussels. Neighbourhood guides, setup checklists, cost calculators, and an events calendar — all in one place.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/plan">
+                <Button size="lg" className="flex items-center gap-2">
+                  Build your plan <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              <Link href="/guides">
+                <Button variant="secondary" size="lg">
+                  Explore guides
+                </Button>
+              </Link>
+            </div>
           </div>
-          <p className="text-xs text-content-4 mt-4">Takes 60 seconds. Completely free.</p>
+
+          {/* Weather / currency strip */}
+          <div className="mt-14 pt-6 border-t border-sand/50 dark:border-night-border">
+            <WeatherCurrencyStrip />
+          </div>
         </section>
 
-        {/* Profile selector */}
-        <section className="mb-20">
-          <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 text-center mb-6">Who are you?</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {PROFILE_CARDS.map(p => (
+        {/* Navigation grid */}
+        <section className="max-w-6xl mx-auto px-6 md:px-8 pb-20 md:pb-28">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {NAV_CARDS.map(card => (
               <Link
-                key={p.id}
-                href="/plan"
-                onClick={() => setProfile(p.id)}
-                className="block p-5 bg-surface-1 border border-border rounded-xl hover:border-amber-border hover:-translate-y-px transition-all duration-150 text-center shadow-card"
+                key={card.href}
+                href={card.href}
+                className="group block bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-8 hover:border-terracotta/30 dark:hover:border-terracotta/30 transition-colors duration-300"
               >
-                <div className="text-3xl mb-3">{p.icon}</div>
-                <p className="text-sm font-display font-bold text-content mb-1">{p.label}</p>
-                <p className="text-xs text-content-3">{p.desc}</p>
+                <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-3">
+                  {card.label}
+                </p>
+                <h2 className="text-xl font-display font-medium text-ink dark:text-night-text mb-2 group-hover:text-terracotta transition-colors duration-300">
+                  {card.title}
+                </h2>
+                <p className="text-sm font-body font-light text-walnut dark:text-night-muted leading-relaxed">
+                  {card.desc}
+                </p>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* Features */}
-        <section className="mb-20">
-          <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 text-center mb-6">Everything included, free</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {FEATURES.map(feature => (
-              <div key={feature.title} className="p-4 bg-surface-1 border border-border rounded-xl shadow-card">
-                <feature.icon className="w-5 h-5 text-amber mb-3" />
-                <p className="text-sm font-display font-bold text-content mb-1">{feature.title}</p>
-                <p className="text-xs text-content-3 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
+        {/* Featured guide */}
+        <section className="max-w-6xl mx-auto px-6 md:px-8 pb-20 md:pb-28">
+          <div className="border-t border-sand/50 dark:border-night-border pt-12 md:pt-16">
+            <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-8">
+              From the guides
+            </p>
+            <div className="max-w-2xl">
+              <Link href={`/guides/${featuredGuide.slug}`} className="group">
+                <p className="text-xs font-body text-terracotta mb-3">{featuredGuide.category}</p>
+                <h2 className="text-2xl md:text-3xl font-display font-medium text-ink dark:text-night-text leading-tight mb-4 group-hover:text-terracotta transition-colors duration-300">
+                  {featuredGuide.title}
+                </h2>
+                <p className="text-base font-body font-light text-walnut dark:text-night-muted leading-relaxed mb-5">
+                  {featuredGuide.excerpt}
+                </p>
+                <span className="text-sm font-body text-terracotta group-hover:underline underline-offset-4 transition-all">
+                  Read the guide
+                </span>
+              </Link>
+            </div>
           </div>
         </section>
 
         {/* Pricing */}
-        <section className="mb-20">
-          <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 text-center mb-6">Simple pricing</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <div className="p-5 bg-surface-1 border border-border rounded-xl shadow-card">
-              <p className="text-xl font-display font-bold text-content mb-0.5">Free</p>
-              <p className="text-sm text-content-3 mb-4">Everything you need to get settled.</p>
-              <ul className="space-y-1.5 mb-5">
-                {['Setup checklist', 'This Week feed', 'Events calendar', '10 commune guides', 'Cost estimator', 'Housing links', '2 fillable templates', 'Interactive map'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-xs text-content-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/home">
-                <Button variant="ghost" size="sm" className="w-full">Start for free</Button>
-              </Link>
-            </div>
-
-            <div className="p-5 bg-surface-1 border border-sky-border rounded-xl" style={{ boxShadow: '0 0 20px -5px rgba(96,165,250,0.12)' }}>
-              <div className="flex items-center gap-2 mb-0.5">
-                <p className="text-xl font-display font-bold text-content">Navigator Pro</p>
-                <Badge variant="sky">Coming soon</Badge>
+        <section className="max-w-6xl mx-auto px-6 md:px-8 pb-20 md:pb-28">
+          <div className="border-t border-sand/50 dark:border-night-border pt-12 md:pt-16">
+            <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-8">
+              Pricing
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+              {/* Free */}
+              <div className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-7">
+                <p className="text-xl font-display font-medium text-ink dark:text-night-text mb-1">Free</p>
+                <p className="text-sm text-walnut dark:text-night-muted mb-5 font-light">Everything you need to get settled.</p>
+                <ul className="space-y-2 mb-6">
+                  {['Setup checklist', 'Events calendar', 'Neighbourhood guides', 'Cost calculator', 'Housing links', '2 letter templates', 'Interactive map'].map(f => (
+                    <li key={f} className="flex items-center gap-2.5 text-sm font-body text-espresso dark:text-night-text font-light">
+                      <div className="w-1 h-1 rounded-full bg-sage shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/plan">
+                  <Button variant="secondary" size="sm">Start free</Button>
+                </Link>
               </div>
-              <p className="text-lg font-display font-bold text-sky mb-0.5">€9 <span className="text-sm font-normal text-content-3">/month</span></p>
-              <p className="text-xs text-content-3 mb-4">For expats settling in long-term.</p>
-              <ul className="space-y-1.5 mb-5">
-                {['Everything in Free', 'Live event notifications', 'Neighbourhood price alerts', 'Pro commune comparison', 'Priority support'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-xs text-content-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-sky shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="ghost" size="sm" className="w-full" disabled>
-                Coming soon
-              </Button>
-            </div>
 
-            <div className="p-5 bg-surface-1 border border-amber-border rounded-xl shadow-glow-amber">
-              <div className="flex items-center gap-2 mb-0.5">
-                <p className="text-xl font-display font-bold text-content">Move Pack</p>
-                <Badge variant="amber">Coming soon</Badge>
+              {/* Pro */}
+              <div className="bg-ivory dark:bg-night-1 border border-terracotta/20 rounded-2xl p-7">
+                <div className="flex items-baseline gap-2 mb-1">
+                  <p className="text-xl font-display font-medium text-ink dark:text-night-text">Navigator Pro</p>
+                </div>
+                <p className="text-sm font-body font-light text-terracotta mb-1">€9 / month</p>
+                <p className="text-sm text-walnut dark:text-night-muted mb-5 font-light">For expats settling in long-term.</p>
+                <ul className="space-y-2 mb-6">
+                  {['All 7 letter templates (EN/FR)', 'Downloadable checklist PDF', 'Commune comparison export', 'Weekly events digest', '12 months of updates'].map(f => (
+                    <li key={f} className="flex items-center gap-2.5 text-sm font-body text-espresso dark:text-night-text font-light">
+                      <div className="w-1 h-1 rounded-full bg-terracotta shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="secondary" size="sm" disabled>Coming soon</Button>
               </div>
-              <p className="text-lg font-display font-bold text-amber mb-0.5">€19 <span className="text-sm font-normal text-content-3">one-time</span></p>
-              <p className="text-xs text-content-3 mb-4">For when you really need to get it right.</p>
-              <ul className="space-y-1.5 mb-5">
-                {['All 7 fillable templates (EN/FR)', 'Downloadable checklist PDF', 'Commune comparison export', '12 months of updates'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-xs text-content-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="ghost" size="sm" className="w-full" disabled>
-                Coming soon
-              </Button>
             </div>
           </div>
         </section>
-
-        {/* Email capture */}
-        <section className="mb-20 text-center">
-          <Sparkles className="w-6 h-6 text-amber mx-auto mb-3" />
-          <h3 className="text-lg font-display font-bold text-content mb-1">Get notified when Move Pack launches</h3>
-          <p className="text-xs text-content-3 mb-4">No spam. One email when it&apos;s ready.</p>
-          {emailSaved ? (
-            <p className="text-sm text-emerald font-semibold">You&apos;re on the list!</p>
-          ) : (
-            <div className="flex gap-2 max-w-sm mx-auto">
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && saveEmail()}
-                placeholder="your@email.com"
-                className="flex-1 px-3 py-2.5 bg-surface-0 border border-border rounded-lg text-content text-sm placeholder:text-content-4 outline-none focus:border-amber focus:ring-1 transition-all duration-150"
-              />
-              <Button onClick={saveEmail}>Notify me</Button>
-            </div>
-          )}
-        </section>
-
-        <section className="text-center">
-          <p className="text-xs text-content-4 leading-relaxed max-w-lg mx-auto">
-            Brussels Navigator provides information, not advice. We are not liable for decisions made based on this content.
-            Information reflects 2024–2026 conditions and may change.
-          </p>
-        </section>
       </main>
 
-      <footer className="border-t border-border py-8 px-4 text-center">
-        <p className="text-xs text-content-4">
-          © 2026 Brussels Navigator ·{' '}
-          <Link href="/home" className="hover:text-content-2 transition-colors">Open App</Link>
-          {' '}· Information only, not advice
-        </p>
-      </footer>
+      <Footer />
     </div>
   )
 }

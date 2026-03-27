@@ -1,82 +1,93 @@
 @import "tailwindcss";
 
+/* Dark mode via .dark class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Fonts */
-  --font-display: var(--font-outfit), sans-serif;
-  --font-body: var(--font-nunito), sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
 
-  /* Surface colors */
-  --color-surface-0: #09090B;
-  --color-surface-1: #111113;
-  --color-surface-2: #18181B;
-  --color-surface-3: #1F1F23;
-  --color-surface-4: #27272A;
+  /* Light mode — warm, editorial */
+  --color-cream: #FDFBF7;
+  --color-ivory: #F7F4EE;
+  --color-sand: #EDE8DF;
+  --color-stone: #D4CEC4;
+  --color-walnut: #8B7E6A;
+  --color-espresso: #3D3529;
+  --color-ink: #1A1714;
 
-  /* Border */
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.12);
-  --color-border-active: rgba(255, 255, 255, 0.18);
+  /* Terracotta accent */
+  --color-terracotta: #C4704B;
+  --color-terracotta-light: #E8A88A;
+  --color-terracotta-dark: #9E5535;
 
-  /* Content (text) */
-  --color-content: #FAFAFA;
-  --color-content-2: #A1A1AA;
-  --color-content-3: #71717A;
-  --color-content-4: #3F3F46;
-  --color-content-5: #27272A;
+  /* Functional */
+  --color-sage: #7A9E7E;
+  --color-sage-light: #E8F0E9;
+  --color-sky: #6B9BC3;
+  --color-sky-light: #E5EFF7;
+  --color-coral: #D4726A;
+  --color-coral-light: #F8E8E6;
 
-  /* Amber */
-  --color-amber: #F59E0B;
-  --color-amber-dark: #D97706;
-  --color-amber-soft: rgba(245, 158, 11, 0.08);
-  --color-amber-muted: rgba(245, 158, 11, 0.15);
-  --color-amber-border: rgba(245, 158, 11, 0.2);
-
-  /* Emerald */
-  --color-emerald: #34D399;
-  --color-emerald-soft: rgba(52, 211, 153, 0.08);
-  --color-emerald-border: rgba(52, 211, 153, 0.2);
-
-  /* Sky */
-  --color-sky: #60A5FA;
-  --color-sky-soft: rgba(96, 165, 250, 0.08);
-  --color-sky-border: rgba(96, 165, 250, 0.2);
-
-  /* Rose */
-  --color-rose: #F87171;
-  --color-rose-soft: rgba(248, 113, 113, 0.08);
-  --color-rose-border: rgba(248, 113, 113, 0.2);
-
-  /* Shadows */
-  --shadow-card: inset 0 1px 0 0 rgba(255,255,255,0.04), 0 0 0 1px rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-card-hover: inset 0 1px 0 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(255,255,255,0.14), 0 0 20px -5px rgba(245,158,11,0.12), 0 4px 16px rgba(0,0,0,0.5);
-  --shadow-glow-amber: 0 0 20px -5px rgba(245, 158, 11, 0.15);
-  --shadow-glow-amber-strong: 0 0 30px -5px rgba(245, 158, 11, 0.25);
-
-  /* Animations */
-  --animate-fade-up: fadeUp 0.4s ease both;
-  --animate-fade-in: fadeIn 0.3s ease both;
-  --animate-slide-up: slideUp 0.3s ease both;
+  /* Dark mode surfaces */
+  --color-night: #141210;
+  --color-night-1: #1E1C18;
+  --color-night-2: #2A2722;
+  --color-night-border: rgba(255, 255, 255, 0.08);
+  --color-night-text: #E8E4DC;
+  --color-night-muted: #8B8578;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-* {
-  box-sizing: border-box;
-}
+/* Base */
+* { box-sizing: border-box; }
 
 html {
+  color-scheme: light;
+  background-color: var(--color-cream);
+}
+
+html.dark {
   color-scheme: dark;
+  background-color: var(--color-night);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-espresso);
+  background-color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark body {
+  color: var(--color-night-text);
+  background-color: var(--color-night);
+}
+
+/* Prose styles for guide articles */
+.prose-editorial h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+html.dark .prose-editorial h2 {
+  color: var(--color-night-text);
+}
+
+.prose-editorial p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-espresso);
+  margin-bottom: 1.25rem;
+  font-weight: 300;
+}
+
+html.dark .prose-editorial p {
+  color: var(--color-night-text);
 }

@@ -1,5 +1,0 @@
-export { Badge } from './Badge'
-export { Button } from './Button'
-export { DotRating } from './DotRating'
-export { SegmentControl } from './SegmentControl'
-export { Skeleton } from './Skeleton'

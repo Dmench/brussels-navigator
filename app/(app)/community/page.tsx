@@ -1,55 +1,60 @@
 import { COMMUNITIES } from '@/lib/constants'
-import { Badge } from '@/components/ui/Badge'
 import { ExternalLink } from 'lucide-react'
-import type { BadgeVariant } from '@/lib/types'
 
-const PLATFORM_VARIANT: Record<string, BadgeVariant> = {
-  Facebook: 'sky',
-  Reddit: 'rose',
-  InterNations: 'emerald',
-  Website: 'neutral',
-  Meetup: 'amber',
-  Official: 'emerald',
-  Association: 'neutral',
-}
+const GROUPS = [
+  { heading: 'Online communities', filter: ['Reddit', 'Facebook'] },
+  { heading: 'Events and networking', filter: ['InterNations', 'Meetup'] },
+  { heading: 'English-language media', filter: ['Website', 'Newsletter', 'Official'] },
+]
 
 export default function CommunityPage() {
   return (
-    <div className="animate-fade-up space-y-4">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-content">Community</h1>
-        <p className="text-sm text-content-3 mt-0.5">Connect with Brussels expats.</p>
-      </div>
+    <div className="max-w-2xl">
+      <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-3">Connect</p>
+      <h1 className="text-3xl md:text-4xl font-display font-semibold text-ink dark:text-night-text mb-4">Brussels expat communities</h1>
+      <p className="text-base font-body font-light text-walnut dark:text-night-muted leading-relaxed mb-12 max-w-xl">
+        The best way to meet people, get practical advice, and stay informed. These are real communities with active members.
+      </p>
 
-      <div className="space-y-2">
-        {COMMUNITIES.map(community => (
-          <a
-            key={community.id}
-            href={community.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-start justify-between p-4 bg-surface-1 border border-border rounded-xl shadow-card hover:border-border-hover hover:shadow-card-hover hover:-translate-y-px transition-all duration-150 group"
-          >
-            <div className="flex-1 pr-4">
-              <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="text-sm font-semibold text-content">{community.name}</span>
-                <Badge variant={PLATFORM_VARIANT[community.platform] ?? 'neutral'}>{community.platform}</Badge>
-                <span className="text-[10px] text-content-4">{community.members}</span>
+      <div className="space-y-10">
+        {GROUPS.map(group => {
+          const items = COMMUNITIES.filter(c => group.filter.includes(c.platform))
+          return (
+            <section key={group.heading}>
+              <h2 className="text-lg font-display font-medium text-ink dark:text-night-text mb-5">{group.heading}</h2>
+              <div className="border border-sand/50 dark:border-night-border rounded-xl overflow-hidden divide-y divide-sand/50 dark:divide-night-border">
+                {items.map(community => (
+                  <div key={community.name} className="flex items-start justify-between gap-4 px-5 py-5 bg-ivory dark:bg-night-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <a
+                          href={community.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-base font-body font-medium text-espresso dark:text-night-text hover:text-terracotta transition-colors"
+                        >
+                          {community.name} <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                        <span className="text-[10px] font-body uppercase tracking-[0.1em] text-walnut dark:text-night-muted px-2 py-0.5 rounded-full border border-sand dark:border-night-border">
+                          {community.platform}
+                        </span>
+                        {community.members && (
+                          <span className="text-xs font-body text-walnut dark:text-night-muted">{community.members} members</span>
+                        )}
+                      </div>
+                      <p className="text-sm font-body font-light text-walnut dark:text-night-muted leading-relaxed">{community.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <p className="text-xs text-content-3 leading-relaxed">{community.desc}</p>
-            </div>
-            <ExternalLink className="w-4 h-4 text-content-4 group-hover:text-content-2 transition-colors shrink-0 mt-0.5" />
-          </a>
-        ))}
+            </section>
+          )
+        })}
       </div>
 
-      <div className="bg-surface-1 border border-border rounded-xl p-4 shadow-card">
-        <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 mb-2">Note</p>
-        <p className="text-xs text-content-3 leading-relaxed">
-          These communities are external platforms not affiliated with Brussels Navigator.
-          Always exercise caution when sharing personal information online.
-        </p>
-      </div>
+      <p className="text-xs font-body text-walnut dark:text-night-muted leading-relaxed mt-10">
+        Member counts are approximate and sourced from public platform data. Brussels Navigator is not affiliated with any of these communities.
+      </p>
     </div>
   )
 }

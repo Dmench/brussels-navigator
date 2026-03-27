@@ -1,82 +1,46 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { ExchangeRates } from '../types'
 
-const CACHE_KEY = 'rates-cache'
-const CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
-
-interface CacheEntry {
-  data: ExchangeRates
-  timestamp: number
-}
+const CACHE_KEY = 'bn-rates'
+const TTL = 4 * 60 * 60 * 1000
 
 export function useRates() {
   const [data, setData] = useState<ExchangeRates | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
 
   useEffect(() => {
-    let cancelled = false
-
-    async function fetchRates() {
-      try {
-        try {
-          const cached = localStorage.getItem(CACHE_KEY)
-          if (cached) {
-            const entry: CacheEntry = JSON.parse(cached)
-            if (Date.now() - entry.timestamp < CACHE_TTL) {
-              if (!cancelled) {
-                setData(entry.data)
-                setLoading(false)
-              }
-              return
-            }
-          }
-        } catch {}
-
-        const res = await fetch('https://api.frankfurter.dev/v2/latest?base=EUR')
-        if (!res.ok) throw new Error('Failed')
-        const json = await res.json()
-
-        const rates: ExchangeRates = {
-          base: 'EUR',
-          date: json.date,
-          rates: json.rates,
-        }
-
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ data: rates, timestamp: Date.now() }))
-        } catch {}
-
-        if (!cancelled) {
-          setData(rates)
+    try {
+      const raw = localStorage.getItem(CACHE_KEY)
+      if (raw) {
+        const { data: d, ts } = JSON.parse(raw)
+        if (Date.now() - ts < TTL) {
+          setData(d)
           setLoading(false)
-        }
-      } catch {
-        if (!cancelled) {
-          setError(true)
-          setLoading(false)
+          return
         }
       }
-    }
+    } catch {}
 
-    fetchRates()
-    return () => { cancelled = true }
+    fetch('https://api.frankfurter.dev/v2/latest?base=EUR', {
+      signal: AbortSignal.timeout(5000),
+    })
+      .then(r => r.json())
+      .then(json => {
+        const d: ExchangeRates = { base: 'EUR', date: json.date, rates: json.rates }
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: d, ts: Date.now() })) } catch {}
+        setData(d)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
-  function convert(eur: number, currency: string): number | null {
-    if (!data || currency === 'EUR') return eur
-    const rate = data.rates[currency]
-    if (!rate) return null
-    return Math.round(eur * rate * 100) / 100
-  }
+  const convert = useCallback((eur: number, toCurrency: string): number | null => {
+    if (!data) return null
+    const rate = data.rates[toCurrency]
+    return rate ? Math.round(eur * rate) : null
+  }, [data])
 
-  function formatConverted(eur: number, currency: string): string | null {
-    const converted = convert(eur, currency)
-    if (converted === null) return null
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(converted)
-  }
-
-  return { data, loading, error, convert, formatConverted }
+  return { data, loading, convert }
 }

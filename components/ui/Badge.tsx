@@ -1,28 +1,25 @@
 import { cn } from '@/lib/utils'
 
-type BadgeVariant = 'amber' | 'emerald' | 'sky' | 'rose' | 'neutral'
+type BadgeVariant = 'default' | 'terracotta' | 'sage' | 'sky'
 
 interface BadgeProps {
-  children: React.ReactNode
   variant?: BadgeVariant
+  children: React.ReactNode
   className?: string
 }
 
-const variantClasses: Record<BadgeVariant, string> = {
-  amber: 'bg-amber-soft text-amber border-amber-border',
-  emerald: 'bg-emerald-soft text-emerald border-emerald-border',
-  sky: 'bg-sky-soft text-sky border-sky-border',
-  rose: 'bg-rose-soft text-rose border-rose-border',
-  neutral: 'bg-surface-3 text-content-2 border-border',
-}
+export function Badge({ variant = 'default', children, className }: BadgeProps) {
+  const base = 'inline-flex items-center text-[11px] font-body font-medium uppercase tracking-[0.15em] px-3 py-1 rounded-full border'
 
-export function Badge({ children, variant = 'neutral', className }: BadgeProps) {
+  const variants = {
+    default: 'border-sand text-walnut bg-ivory dark:border-night-border dark:text-night-muted dark:bg-night-2',
+    terracotta: 'border-terracotta/20 text-terracotta bg-terracotta/5',
+    sage: 'border-sage/20 text-sage bg-sage/5',
+    sky: 'border-sky/20 text-sky bg-sky/5',
+  }
+
   return (
-    <span className={cn(
-      'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold font-display uppercase tracking-wide border',
-      variantClasses[variant],
-      className
-    )}>
+    <span className={cn(base, variants[variant], className)}>
       {children}
     </span>
   )

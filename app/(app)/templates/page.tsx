@@ -2,210 +2,137 @@
 
 import { useState } from 'react'
 import { TEMPLATES } from '@/lib/constants'
-import { SegmentControl } from '@/components/ui/SegmentControl'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Copy, Check, Lock, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Copy, Check } from 'lucide-react'
+import type { Language } from '@/lib/types'
 
-type Lang = 'en' | 'fr'
+function fillTemplate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{([^}]+)\}/g, (_, key) => values[key] || `{${key}}`)
+}
 
-function FillableTemplate({ template, lang }: { template: typeof TEMPLATES[number]; lang: Lang }) {
-  const text = lang === 'en' ? template.en : template.fr
+function TemplateCard({ template, language }: { template: typeof TEMPLATES[number]; language: Language }) {
   const [values, setValues] = useState<Record<string, string>>({})
   const [copied, setCopied] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-  function getFilledText() {
-    return (template.fields as readonly string[]).reduce((acc, field) => {
-      return acc.replace(new RegExp(`\\{${field}\\}`, 'g'), values[field] || `[${field.replace(/_/g, ' ')}]`)
-    }, text)
-  }
+  const rawText = language === 'en' ? template.en : template.fr
+  const fields = [...rawText.matchAll(/\{([^}]+)\}/g)].map(m => m[1]).filter((v, i, arr) => arr.indexOf(v) === i)
+  const filled = fillTemplate(rawText, values)
 
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(getFilledText())
+  function copyToClipboard() {
+    navigator.clipboard.writeText(filled).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch {}
+    })
   }
 
-  const parts = text.split(/(\{[^}]+\})/)
+  const isLocked = template.tier === 'pro'
 
   return (
-    <div className="mt-4 space-y-4">
-      {template.fields.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {(template.fields as readonly string[]).map(field => (
-            <div key={field}>
-              <label className="text-[10px] text-content-4 uppercase tracking-wide">{field.replace(/_/g, ' ')}</label>
-              <input
-                type="text"
-                value={values[field] || ''}
-                onChange={e => setValues(prev => ({ ...prev, [field]: e.target.value }))}
-                placeholder={field.replace(/_/g, ' ')}
-                className="w-full mt-0.5 px-3 py-2 bg-surface-0 border border-border rounded-lg text-content text-xs placeholder:text-content-4 outline-none focus:border-amber focus:ring-1 transition-all duration-150"
-              />
+    <div className="border border-sand/50 dark:border-night-border rounded-xl overflow-hidden">
+      <button
+        onClick={() => !isLocked && setIsOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 bg-ivory dark:bg-night-1 text-left"
+      >
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <p className="text-sm font-body font-medium text-espresso dark:text-night-text">{template.title}</p>
+            {isLocked && (
+              <span className="text-[10px] font-body uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-terracotta/20 text-terracotta">
+                Pro
+              </span>
+            )}
+          </div>
+          <p className="text-xs font-body font-light text-walnut dark:text-night-muted">{template.desc}</p>
+        </div>
+        <span className="text-xs font-body text-walnut dark:text-night-muted shrink-0 ml-3">{template.category}</span>
+      </button>
+
+      {isOpen && !isLocked && (
+        <div className="px-5 pb-5 border-t border-sand/50 dark:border-night-border bg-ivory dark:bg-night-1">
+          {/* Fields */}
+          {fields.length > 0 && (
+            <div className="pt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {fields.map(field => (
+                <div key={field}>
+                  <label className="block text-xs font-body text-walnut dark:text-night-muted mb-1">{field}</label>
+                  <input
+                    type="text"
+                    value={values[field] ?? ''}
+                    onChange={e => setValues(prev => ({ ...prev, [field]: e.target.value }))}
+                    placeholder={field}
+                    className="w-full px-3 py-2 bg-cream dark:bg-night-2 border-b border-terracotta/30 text-espresso dark:text-night-text text-sm font-body placeholder:text-stone dark:placeholder:text-night-muted outline-none focus:border-terracotta transition-colors"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          {/* Filled text */}
+          <div className="relative">
+            <pre className="whitespace-pre-wrap text-xs font-body text-espresso dark:text-night-text leading-relaxed p-4 bg-cream dark:bg-night-2 rounded-lg border border-sand/50 dark:border-night-border">
+              {filled}
+            </pre>
+            <button
+              onClick={copyToClipboard}
+              className="absolute top-3 right-3 flex items-center gap-1.5 text-xs font-body text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text transition-colors"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-sage" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
         </div>
       )}
 
-      <div className="bg-surface-0 border border-border rounded-lg p-4 font-mono text-xs text-content-2 leading-relaxed whitespace-pre-wrap">
-        {parts.map((part, i) => {
-          const match = part.match(/^\{([^}]+)\}$/)
-          if (match) {
-            const field = match[1]
-            return (
-              <span
-                key={i}
-                className={cn(
-                  'border-b border-amber-border',
-                  values[field] ? 'text-amber' : 'text-content-4 italic'
-                )}
-              >
-                {values[field] || `[${field.replace(/_/g, ' ')}]`}
-              </span>
-            )
-          }
-          return <span key={i}>{part}</span>
-        })}
-      </div>
-
-      <Button onClick={copy} variant="primary" size="sm" className="w-full">
-        {copied
-          ? <><Check className="w-3.5 h-3.5 mr-1.5" />Copied!</>
-          : <><Copy className="w-3.5 h-3.5 mr-1.5" />Copy to clipboard</>
-        }
-      </Button>
-    </div>
-  )
-}
-
-function UpgradeModal({ onClose }: { onClose: () => void }) {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  function submit() {
-    if (email) {
-      try { localStorage.setItem('waitlist-email', email) } catch {}
-      setSubmitted(true)
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-0/80 backdrop-blur-sm" onClick={onClose}>
-      <div
-        className="bg-surface-1 border border-border rounded-2xl p-6 max-w-md w-full shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-display font-bold text-content">Move Pack — €19</h3>
-            <p className="text-xs text-content-3 mt-0.5">One-time. Yours forever.</p>
-          </div>
-          <button onClick={onClose} className="text-content-4 hover:text-content-2 transition-colors">
-            <X className="w-5 h-5" />
-          </button>
+      {isLocked && (
+        <div className="px-5 py-4 bg-ivory/50 dark:bg-night-1/50 border-t border-sand/50 dark:border-night-border">
+          <p className="text-xs font-body font-light text-walnut dark:text-night-muted">
+            Available with Navigator Pro. <span className="text-terracotta cursor-pointer hover:underline">Join the waitlist.</span>
+          </p>
         </div>
-        <ul className="space-y-2 mb-5">
-          {[
-            'All 7 fillable templates (EN/FR)',
-            'Downloadable checklist PDF',
-            'Commune comparison export',
-            '12 months of updates',
-          ].map(item => (
-            <li key={item} className="flex items-center gap-2 text-sm text-content-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber shrink-0" />
-              {item}
-            </li>
-          ))}
-        </ul>
-        {submitted ? (
-          <div className="bg-emerald-soft border border-emerald-border rounded-lg p-3 text-center">
-            <p className="text-sm text-emerald font-semibold">You&apos;re on the list!</p>
-            <p className="text-xs text-content-3 mt-0.5">We&apos;ll email you when Move Pack launches.</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-xs text-content-3 font-semibold">Coming soon — join the waitlist:</p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="flex-1 px-3 py-2 bg-surface-0 border border-border rounded-lg text-content text-sm placeholder:text-content-4 outline-none focus:border-amber focus:ring-1 transition-all duration-150"
-              />
-              <Button onClick={submit} size="sm">Notify me</Button>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }
 
 export default function TemplatesPage() {
-  const [lang, setLang] = useState<Lang>('en')
-  const [expanded, setExpanded] = useState<string | null>(null)
-  const [showUpgrade, setShowUpgrade] = useState(false)
+  const [language, setLanguage] = useState<Language>('en')
 
   return (
-    <div className="animate-fade-up space-y-4">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-content">Templates</h1>
-        <p className="text-sm text-content-3 mt-0.5">Fill-in-the-blank letters for every situation.</p>
+    <div className="max-w-2xl">
+      <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-3">Tools</p>
+      <h1 className="text-3xl md:text-4xl font-display font-semibold text-ink dark:text-night-text mb-4">Communication templates</h1>
+      <p className="text-base font-body font-light text-walnut dark:text-night-muted leading-relaxed mb-8 max-w-xl">
+        Belgian landlords, communes, and service providers expect formal written communication. Fill in the fields and copy — no writing required.
+      </p>
+
+      {/* Language toggle */}
+      <div className="flex items-center gap-4 mb-8">
+        <span className="text-xs font-body text-walnut dark:text-night-muted">Language:</span>
+        {(['en', 'fr'] as Language[]).map(lang => (
+          <button
+            key={lang}
+            onClick={() => setLanguage(lang)}
+            className={cn(
+              'text-sm font-body pb-0.5 transition-colors',
+              language === lang
+                ? 'text-espresso dark:text-night-text border-b border-espresso dark:border-night-text'
+                : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+            )}
+          >
+            {lang === 'en' ? 'English' : 'Français'}
+          </button>
+        ))}
       </div>
 
-      <SegmentControl
-        options={[{ value: 'en', label: 'English' }, { value: 'fr', label: 'Français' }]}
-        value={lang}
-        onChange={v => setLang(v as Lang)}
-      />
-
-      <div className="space-y-2">
-        {TEMPLATES.map(template => {
-          const isExpanded = expanded === template.id
-          return (
-            <div key={template.id} className="bg-surface-1 border border-border rounded-xl shadow-card overflow-hidden">
-              <button
-                onClick={() => {
-                  if (!template.free) { setShowUpgrade(true); return }
-                  setExpanded(isExpanded ? null : template.id)
-                }}
-                className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-surface-2 transition-all duration-150"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-content">{template.title}</p>
-                  <p className="text-xs text-content-3">{template.desc}</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 ml-3">
-                  {template.free
-                    ? <Badge variant="emerald">Free</Badge>
-                    : <Badge variant="amber">Move Pack</Badge>
-                  }
-                  {template.free && (
-                    isExpanded
-                      ? <ChevronUp className="w-4 h-4 text-content-4" />
-                      : <ChevronDown className="w-4 h-4 text-content-4" />
-                  )}
-                  {!template.free && <Lock className="w-4 h-4 text-content-4" />}
-                </div>
-              </button>
-              {isExpanded && template.free && (
-                <div className="px-4 pb-4 border-t border-border">
-                  <FillableTemplate template={template} lang={lang} />
-                </div>
-              )}
-            </div>
-          )
-        })}
+      <div className="space-y-3">
+        {TEMPLATES.map(template => (
+          <TemplateCard key={template.id} template={template} language={language} />
+        ))}
       </div>
 
-      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
-
-      <p className="text-xs text-content-4 text-center pb-2">
-        Templates are starting points. Adapt to your specific situation.
+      <p className="text-xs font-body font-light text-walnut dark:text-night-muted leading-relaxed mt-8">
+        Templates are provided as a starting point. Review carefully before sending — Belgian administrative procedures may have specific requirements.
       </p>
     </div>
   )

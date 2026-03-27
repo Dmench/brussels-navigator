@@ -2,51 +2,58 @@
 
 import { useState } from 'react'
 import { useHolidays } from '@/lib/hooks/use-holidays'
-import { Badge } from '@/components/ui/Badge'
-import { TAX_RESOURCES } from '@/lib/constants'
-import { format, parseISO, getMonth, getYear } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { ExternalLink } from 'lucide-react'
-import type { BadgeVariant } from '@/lib/types'
 
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-type FilterType = 'all' | 'holiday' | 'event' | 'info'
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const TYPES = ['all', 'holiday', 'event', 'info'] as const
+type Filter = typeof TYPES[number]
 
-const TYPE_VARIANT: Record<string, BadgeVariant> = {
-  holiday: 'amber',
-  event: 'emerald',
-  info: 'sky',
+const TYPE_LABELS = {
+  holiday: 'Public holiday',
+  event: 'Event',
+  info: 'Information',
 }
 
 export default function CalendarPage() {
-  const { events } = useHolidays()
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
-  const [filter, setFilter] = useState<FilterType>('all')
+  const { events, loading } = useHolidays()
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
+  const [filter, setFilter] = useState<Filter>('all')
 
   const filtered = events.filter(e => {
-    const d = parseISO(e.date)
-    const monthMatch = getMonth(d) === selectedMonth && getYear(d) === 2026
-    const typeMatch = filter === 'all' || e.type === filter
-    return monthMatch && typeMatch
+    const month = parseISO(e.date).getMonth()
+    if (selectedMonth !== null && month !== selectedMonth) return false
+    if (filter !== 'all' && e.type !== filter) return false
+    return true
   })
 
   return (
-    <div className="animate-fade-up space-y-4">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-content">2026 Calendar</h1>
-        <p className="text-sm text-content-3 mt-0.5">Belgian public holidays and Brussels events.</p>
-      </div>
+    <div>
+      <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-3">Planning</p>
+      <h1 className="text-3xl md:text-4xl font-display font-semibold text-ink dark:text-night-text mb-8">Brussels calendar 2026</h1>
 
-      <div className="flex gap-1.5 overflow-x-auto pb-1">
+      {/* Month selector */}
+      <div className="flex flex-wrap gap-x-5 gap-y-1 mb-6">
+        <button
+          onClick={() => setSelectedMonth(null)}
+          className={cn(
+            'text-sm font-body pb-0.5 transition-colors duration-200',
+            selectedMonth === null
+              ? 'text-espresso dark:text-night-text border-b border-espresso dark:border-night-text'
+              : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+          )}
+        >
+          All
+        </button>
         {MONTHS.map((m, i) => (
           <button
             key={m}
-            onClick={() => setSelectedMonth(i)}
+            onClick={() => setSelectedMonth(selectedMonth === i ? null : i)}
             className={cn(
-              'shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold font-display transition-all duration-150',
+              'text-sm font-body pb-0.5 transition-colors duration-200',
               selectedMonth === i
-                ? 'bg-amber text-surface-0'
-                : 'bg-surface-2 text-content-3 border border-border hover:border-border-hover'
+                ? 'text-espresso dark:text-night-text border-b border-espresso dark:border-night-text'
+                : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
             )}
           >
             {m}
@@ -54,73 +61,59 @@ export default function CalendarPage() {
         ))}
       </div>
 
-      <div className="flex gap-2 flex-wrap">
-        {(['all', 'holiday', 'event', 'info'] as FilterType[]).map(f => (
+      {/* Type filter */}
+      <div className="flex flex-wrap gap-3 mb-10">
+        {TYPES.map(t => (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
+            key={t}
+            onClick={() => setFilter(t)}
             className={cn(
-              'px-3 py-1 rounded-full text-xs font-semibold font-display border transition-all duration-150',
-              filter === f
-                ? 'bg-surface-3 text-content border-border-active'
-                : 'bg-transparent text-content-3 border-border hover:border-border-hover'
+              'text-[11px] font-body font-medium uppercase tracking-[0.15em] px-3 py-1 rounded-full border transition-colors duration-200',
+              filter === t
+                ? 'border-espresso dark:border-night-text text-espresso dark:text-night-text bg-espresso/5 dark:bg-night-text/5'
+                : 'border-sand dark:border-night-border text-walnut dark:text-night-muted hover:border-stone'
             )}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {t === 'all' ? 'All types' : TYPE_LABELS[t]}
           </button>
         ))}
       </div>
 
-      <div className="space-y-2">
-        {filtered.length === 0 ? (
-          <div className="bg-surface-1 border border-border rounded-xl p-8 text-center">
-            <p className="text-content-3 text-sm">No events in {MONTHS[selectedMonth]} 2026 for this filter.</p>
-          </div>
-        ) : (
-          filtered.map(event => (
-            <div key={`${event.date}-${event.title}`} className="bg-surface-1 border border-border rounded-xl p-4 shadow-card">
-              <div className="flex items-start gap-3">
-                <div className="shrink-0 w-12 text-center bg-surface-2 rounded-lg py-1.5">
-                  <p className="text-[9px] text-content-4 uppercase">{format(parseISO(event.date), 'MMM')}</p>
-                  <p className="text-xl font-display font-bold text-content leading-none">{format(parseISO(event.date), 'd')}</p>
+      {loading ? (
+        <div className="space-y-3">
+          {[...Array(6)].map((_, i) => <div key={i} className="h-16 bg-sand/40 dark:bg-night-1 rounded-xl animate-pulse" />)}
+        </div>
+      ) : filtered.length === 0 ? (
+        <p className="text-sm font-body font-light text-walnut dark:text-night-muted">No events match your filters.</p>
+      ) : (
+        <div className="border border-sand/50 dark:border-night-border rounded-xl overflow-hidden divide-y divide-sand/50 dark:divide-night-border">
+          {filtered.map((event, i) => (
+            <div key={`${event.date}-${i}`} className="flex items-start gap-5 px-5 py-5 bg-ivory dark:bg-night-1">
+              <div className="shrink-0 w-12 text-center">
+                <p className="text-[10px] font-body uppercase text-walnut dark:text-night-muted">{format(parseISO(event.date), 'MMM')}</p>
+                <p className="text-xl font-display font-semibold text-ink dark:text-night-text leading-none">{format(parseISO(event.date), 'd')}</p>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <p className="text-sm font-body font-medium text-espresso dark:text-night-text">{event.title}</p>
+                  <span className={cn(
+                    'text-[10px] font-body uppercase tracking-[0.1em] px-2 py-0.5 rounded-full',
+                    event.type === 'holiday' && 'bg-terracotta/10 text-terracotta',
+                    event.type === 'event' && 'bg-sage/10 text-sage',
+                    event.type === 'info' && 'bg-sky/10 text-sky',
+                  )}>
+                    {TYPE_LABELS[event.type]}
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <p className="text-sm font-semibold text-content">{event.title}</p>
-                    <Badge variant={TYPE_VARIANT[event.type] ?? 'neutral'}>{event.type}</Badge>
-                  </div>
-                  <p className="text-xs text-content-3 mt-1 leading-relaxed">{event.desc}</p>
-                </div>
+                <p className="text-xs font-body font-light text-walnut dark:text-night-muted leading-relaxed">{event.desc}</p>
               </div>
             </div>
-          ))
-        )}
-      </div>
-
-      <div className="bg-surface-1 border border-border rounded-xl p-4 shadow-card">
-        <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 mb-3">Tax Resources</p>
-        <div className="space-y-2">
-          {TAX_RESOURCES.map(r => (
-            <a
-              key={r.url}
-              href={r.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3 bg-surface-2 rounded-lg hover:bg-surface-3 transition-all duration-150 group"
-            >
-              <div>
-                <p className="text-sm font-medium text-content">{r.name}</p>
-                <p className="text-xs text-content-3">{r.desc}</p>
-              </div>
-              <ExternalLink className="w-3.5 h-3.5 text-content-4 group-hover:text-content-2 transition-colors shrink-0" />
-            </a>
           ))}
         </div>
-      </div>
+      )}
 
-      <p className="text-xs text-content-4 text-center pb-2">
-        Public holidays verified via Belgian law. Event dates labeled &quot;approximate&quot; should be confirmed at source.
-        Strike dates are unpredictable — check stib-mivb.be or belgiantrain.be.
+      <p className="text-xs font-body text-walnut dark:text-night-muted mt-6 leading-relaxed">
+        Dates marked as approximate should be confirmed on official websites. Public holidays verified for Belgium 2026.
       </p>
     </div>
   )

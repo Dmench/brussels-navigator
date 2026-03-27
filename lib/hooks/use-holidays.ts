@@ -3,73 +3,61 @@
 import { useState, useEffect } from 'react'
 import { EVENTS_2026 } from '../constants'
 
-interface NagerHoliday {
+const CACHE_KEY = 'bn-holidays'
+const TTL = 24 * 60 * 60 * 1000
+
+interface MergedEvent {
   date: string
-  localName: string
-  name: string
-  fixed: boolean
-  global: boolean
+  title: string
+  type: 'holiday' | 'event' | 'info'
+  desc: string
+  source: 'static' | 'api'
 }
 
-const CACHE_KEY = 'holidays-cache'
-const CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours
-
 export function useHolidays() {
-  const [merged, setMerged] = useState(EVENTS_2026)
+  const [events, setEvents] = useState<MergedEvent[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let cancelled = false
+    const base: MergedEvent[] = EVENTS_2026.map(e => ({ ...e, source: 'static' as const }))
 
-    async function fetchHolidays() {
-      try {
-        try {
-          const cached = localStorage.getItem(CACHE_KEY)
-          if (cached) {
-            const entry = JSON.parse(cached)
-            if (Date.now() - entry.timestamp < CACHE_TTL) {
-              if (!cancelled) {
-                setMerged(entry.data)
-                setLoading(false)
-              }
-              return
-            }
-          }
-        } catch {}
-
-        const res = await fetch('https://date.nager.at/api/v3/PublicHolidays/2026/BE')
-        if (!res.ok) throw new Error('Failed')
-        const nagerHolidays: NagerHoliday[] = await res.json()
-
-        // Merge: add any holidays from Nager that aren't in our static data
-        const existingDates = new Set(EVENTS_2026.filter(e => e.type === 'holiday').map(e => e.date))
-        const toAdd = nagerHolidays
-          .filter(h => !existingDates.has(h.date))
-          .map(h => ({
-            date: h.date,
-            title: h.name,
-            type: 'holiday' as const,
-            desc: `Public holiday: ${h.localName}`,
-          }))
-
-        const result = [...EVENTS_2026, ...toAdd].sort((a, b) => a.date.localeCompare(b.date))
-
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ data: result, timestamp: Date.now() }))
-        } catch {}
-
-        if (!cancelled) {
-          setMerged(result)
+    try {
+      const raw = localStorage.getItem(CACHE_KEY)
+      if (raw) {
+        const { data, ts } = JSON.parse(raw)
+        if (Date.now() - ts < TTL) {
+          setEvents(merge(base, data))
           setLoading(false)
+          return
         }
-      } catch {
-        if (!cancelled) setLoading(false)
       }
-    }
+    } catch {}
 
-    fetchHolidays()
-    return () => { cancelled = true }
+    fetch('https://date.nager.at/api/v3/PublicHolidays/2026/BE', {
+      signal: AbortSignal.timeout(5000),
+    })
+      .then(r => r.json())
+      .then(json => {
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data: json, ts: Date.now() })) } catch {}
+        setEvents(merge(base, json))
+      })
+      .catch(() => { setEvents(base) })
+      .finally(() => setLoading(false))
   }, [])
 
-  return { events: merged, loading }
+  return { events, loading }
+}
+
+function merge(base: MergedEvent[], apiData: { date: string; localName: string; name: string }[]): MergedEvent[] {
+  const existingDates = new Set(base.map(e => e.date))
+  const extra: MergedEvent[] = apiData
+    .filter(h => !existingDates.has(h.date))
+    .map(h => ({
+      date: h.date,
+      title: h.localName || h.name,
+      type: 'holiday' as const,
+      desc: 'Belgian public holiday.',
+      source: 'api' as const,
+    }))
+  return [...base, ...extra].sort((a, b) => a.date.localeCompare(b.date))
 }

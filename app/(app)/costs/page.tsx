@@ -2,107 +2,106 @@
 
 import { useState } from 'react'
 import { MONTHLY_COSTS, CURRENCIES } from '@/lib/constants'
+import { getTotalMonthlyCost, getCostBreakdown } from '@/lib/plan-logic'
 import { useCurrency } from '@/lib/hooks/use-preferences'
 import { useRates } from '@/lib/hooks/use-rates'
-import { SegmentControl } from '@/components/ui/SegmentControl'
 import { cn } from '@/lib/utils'
 import type { BudgetLevel } from '@/lib/types'
-
-const SEGMENT_OPTIONS = [
-  { value: 'budget', label: 'Budget' },
-  { value: 'moderate', label: 'Moderate' },
-  { value: 'comfortable', label: 'Comfortable' },
-]
-
-const TOP_CURRENCIES = ['USD', 'GBP', 'CHF', 'CAD', 'AUD', 'JPY']
 
 export default function CostsPage() {
   const [budget, setBudget] = useState<BudgetLevel>('moderate')
   const [currency, setCurrency] = useCurrency()
-  const { formatConverted } = useRates()
+  const { convert, data: rates } = useRates()
 
-  const total = MONTHLY_COSTS.reduce((sum, item) => sum + item[budget], 0)
-  const maxCost = Math.max(...MONTHLY_COSTS.map(i => i[budget]))
+  const total = getTotalMonthlyCost(budget)
+  const breakdown = getCostBreakdown(budget)
+
+  function formatAmount(eur: number): string {
+    if (currency === 'EUR') return `€${eur.toLocaleString()}`
+    const converted = convert(eur, currency)
+    if (!converted) return `€${eur.toLocaleString()}`
+    const curr = CURRENCIES.find(c => c.code === currency)
+    return `${curr?.symbol ?? currency}${converted.toLocaleString()}`
+  }
 
   return (
-    <div className="animate-fade-up space-y-4">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-content">Monthly Costs</h1>
-        <p className="text-sm text-content-3 mt-0.5">Estimated living costs in Brussels.</p>
+    <div className="max-w-2xl">
+      <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-3">Planning</p>
+      <h1 className="text-3xl md:text-4xl font-display font-semibold text-ink dark:text-night-text mb-4">Monthly cost estimate</h1>
+      <p className="text-base font-body font-light text-walnut dark:text-night-muted leading-relaxed mb-10 max-w-xl">
+        Brussels is significantly cheaper than London, Paris, or Amsterdam. These figures reflect realistic 2025–2026 costs for a single person in a one-bedroom apartment.
+      </p>
+
+      {/* Budget toggle */}
+      <div className="flex items-center gap-6 mb-8">
+        <span className="text-xs font-body text-walnut dark:text-night-muted">Budget level:</span>
+        {(['budget', 'moderate', 'comfortable'] as BudgetLevel[]).map(b => (
+          <button
+            key={b}
+            onClick={() => setBudget(b)}
+            className={cn(
+              'text-sm font-body pb-0.5 capitalize transition-colors duration-200',
+              budget === b
+                ? 'text-espresso dark:text-night-text border-b border-espresso dark:border-night-text'
+                : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+            )}
+          >
+            {b}
+          </button>
+        ))}
       </div>
 
-      <SegmentControl
-        options={SEGMENT_OPTIONS}
-        value={budget}
-        onChange={v => setBudget(v as BudgetLevel)}
-      />
+      {/* Currency selector */}
+      <div className="flex items-center gap-4 mb-10">
+        <span className="text-xs font-body text-walnut dark:text-night-muted">Show in:</span>
+        <div className="flex flex-wrap gap-3">
+          {['EUR', ...CURRENCIES.slice(0, 5).map(c => c.code)].map(c => (
+            <button
+              key={c}
+              onClick={() => setCurrency(c)}
+              className={cn(
+                'text-xs font-body pb-0.5 transition-colors',
+                currency === c
+                  ? 'text-espresso dark:text-night-text border-b border-espresso dark:border-night-text'
+                  : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+              )}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <div className="bg-surface-1 border border-amber-border rounded-xl p-5 text-center" style={{ boxShadow: '0 0 20px -5px rgba(245,158,11,0.15)' }}>
-        <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 mb-1">Estimated Monthly Total</p>
-        <p className="text-4xl font-display font-bold text-amber">€{total.toLocaleString()}</p>
-        {currency !== 'EUR' && formatConverted(total, currency) && (
-          <p className="text-sm text-content-3 mt-1">≈ {formatConverted(total, currency)}</p>
+      {/* Total */}
+      <div className="mb-8">
+        <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-walnut dark:text-night-muted mb-2">Total estimate</p>
+        <p className="text-5xl font-display font-bold text-terracotta">{formatAmount(total)}</p>
+        <p className="text-sm font-body font-light text-walnut dark:text-night-muted mt-1">per month</p>
+        {currency !== 'EUR' && rates && (
+          <p className="text-xs font-body text-stone dark:text-night-muted mt-1">1 EUR = {rates.rates[currency]?.toFixed(2)} {currency} · {rates.date}</p>
         )}
       </div>
 
-      <div>
-        <p className="text-xs text-content-4 mb-2">Convert to:</p>
-        <div className="flex flex-wrap gap-1.5">
-          {TOP_CURRENCIES.map(code => {
-            const c = CURRENCIES.find(x => x.code === code)
-            return (
-              <button
-                key={code}
-                onClick={() => setCurrency(code)}
-                className={cn(
-                  'px-2.5 py-1 rounded-lg text-xs font-semibold font-display border transition-all duration-150',
-                  currency === code
-                    ? 'bg-amber-soft text-amber border-amber-border'
-                    : 'bg-surface-2 text-content-3 border-border hover:border-border-hover'
-                )}
-              >
-                {c?.flag} {code}
-              </button>
-            )
-          })}
-        </div>
+      {/* Breakdown */}
+      <div className="border border-sand/50 dark:border-night-border rounded-xl overflow-hidden divide-y divide-sand/50 dark:divide-night-border">
+        {breakdown.map(item => (
+          <div key={item.label} className="bg-ivory dark:bg-night-1 px-5 py-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-body text-espresso dark:text-night-text">{item.label}</span>
+              <span className="text-sm font-display font-medium text-espresso dark:text-night-text">{formatAmount(item.amount)}</span>
+            </div>
+            <div className="w-full h-px bg-sand dark:bg-night-2 overflow-hidden rounded-full">
+              <div
+                className="h-full bg-espresso/30 dark:bg-night-text/30 rounded-full transition-all duration-500"
+                style={{ width: `${item.percent}%` }}
+              />
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="bg-surface-1 border border-border rounded-xl shadow-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3">Breakdown</p>
-        </div>
-        <div className="divide-y divide-border">
-          {MONTHLY_COSTS.map(item => {
-            const amount = item[budget]
-            const barWidth = maxCost > 0 ? (amount / maxCost) * 100 : 0
-            const converted = formatConverted(amount, currency)
-
-            return (
-              <div key={item.label} className="px-4 py-3">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs text-content-2">{item.label}</span>
-                  <div className="text-right">
-                    <span className="text-sm font-semibold font-display text-content">€{amount}</span>
-                    {converted && currency !== 'EUR' && (
-                      <span className="text-[11px] text-content-4 ml-1.5">{converted}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-amber rounded-full transition-all duration-500"
-                    style={{ width: `${barWidth}%` }}
-                  />
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      <p className="text-xs text-content-4 text-center pb-2">
-        Estimates based on 2024–2026 Brussels averages. Your actual costs will vary.
+      <p className="text-xs font-body font-light text-walnut dark:text-night-muted leading-relaxed mt-6">
+        These are estimates for planning purposes. Actual costs vary by neighbourhood, lifestyle, and individual circumstances. Figures do not include one-off costs such as rental deposit, agency fees, or furniture.
       </p>
     </div>
   )

@@ -3,17 +3,8 @@
 import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { useProfile } from '@/lib/hooks/use-preferences'
-import { COMMUNES, PROFILES } from '@/lib/constants'
+import { COMMUNES, PROFILES, MAP_LANDMARKS } from '@/lib/constants'
 import 'leaflet/dist/leaflet.css'
-
-const LANDMARKS = [
-  { name: 'Grand Place', lat: 50.846, lng: 4.352 },
-  { name: 'EU Quarter / Schuman', lat: 50.844, lng: 4.378 },
-  { name: 'Cinquantenaire', lat: 50.841, lng: 4.395 },
-  { name: 'Flagey', lat: 50.826, lng: 4.374 },
-  { name: 'NATO HQ', lat: 50.880, lng: 4.419 },
-  { name: 'Brussels-Midi', lat: 50.836, lng: 4.336 },
-]
 
 export default function BrusselsMap() {
   const [profile] = useProfile()
@@ -85,7 +76,7 @@ export default function BrusselsMap() {
           )
         })}
 
-        {LANDMARKS.map(landmark => (
+        {MAP_LANDMARKS.map(landmark => (
           <CircleMarker
             key={landmark.name}
             center={[landmark.lat, landmark.lng]}

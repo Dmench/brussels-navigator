@@ -5,10 +5,11 @@ import { useState } from 'react'
 import { useProfile } from '@/lib/hooks/use-preferences'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
-import { ArrowRight, CheckSquare, Calendar, MapPin, DollarSign, Home, FileText, Sparkles } from 'lucide-react'
+import { ArrowRight, CheckSquare, Calendar, MapPin, DollarSign, Home, FileText, Sparkles, Newspaper } from 'lucide-react'
 
 const FEATURES = [
   { icon: CheckSquare, title: 'Setup Checklist', desc: 'Everything you need to do, in order. Profile-aware tips for EU, non-EU, and students.' },
+  { icon: Newspaper, title: 'This Week', desc: 'Live events, Reddit community digest, and STIB transport alerts — updated daily.' },
   { icon: Calendar, title: 'Events Calendar', desc: '2026 public holidays and major Brussels events, with live API sync.' },
   { icon: MapPin, title: 'Neighborhoods', desc: 'Compare 10 communes with expat ratings, avg rents, and vibes.' },
   { icon: DollarSign, title: 'Cost Estimator', desc: 'Realistic monthly budget with live currency conversion for 12 currencies.' },
@@ -60,7 +61,7 @@ export default function LandingPage() {
         <section className="text-center mb-20 animate-fade-up">
           <Badge variant="amber" className="mb-4">Free tool · No sign-up required</Badge>
           <h1 className="text-4xl lg:text-6xl font-display font-extrabold text-content leading-tight mb-4">
-            Your first 90 days<br />in Brussels.
+            Your first 90 days<br />in Brussels — and every day after.
           </h1>
           <p className="text-lg text-content-3 mb-2">One place. No chaos.</p>
           <p className="text-sm text-content-4 mb-8 max-w-md mx-auto">
@@ -117,12 +118,12 @@ export default function LandingPage() {
         {/* Pricing */}
         <section className="mb-20">
           <p className="text-xs font-display font-semibold uppercase tracking-widest text-content-3 text-center mb-6">Simple pricing</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             <div className="p-5 bg-surface-1 border border-border rounded-xl shadow-card">
               <p className="text-xl font-display font-bold text-content mb-0.5">Free</p>
               <p className="text-sm text-content-3 mb-4">Everything you need to get settled.</p>
               <ul className="space-y-1.5 mb-5">
-                {['Setup checklist', 'Events calendar', '10 commune guides', 'Cost estimator', 'Housing links', '2 fillable templates', 'Interactive map', 'Community links'].map(item => (
+                {['Setup checklist', 'This Week feed', 'Events calendar', '10 commune guides', 'Cost estimator', 'Housing links', '2 fillable templates', 'Interactive map'].map(item => (
                   <li key={item} className="flex items-center gap-2 text-xs text-content-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald shrink-0" />
                     {item}
@@ -132,6 +133,26 @@ export default function LandingPage() {
               <Link href="/home">
                 <Button variant="ghost" size="sm" className="w-full">Start for free</Button>
               </Link>
+            </div>
+
+            <div className="p-5 bg-surface-1 border border-sky-border rounded-xl" style={{ boxShadow: '0 0 20px -5px rgba(96,165,250,0.12)' }}>
+              <div className="flex items-center gap-2 mb-0.5">
+                <p className="text-xl font-display font-bold text-content">Navigator Pro</p>
+                <Badge variant="sky">Coming soon</Badge>
+              </div>
+              <p className="text-lg font-display font-bold text-sky mb-0.5">€9 <span className="text-sm font-normal text-content-3">/month</span></p>
+              <p className="text-xs text-content-3 mb-4">For expats settling in long-term.</p>
+              <ul className="space-y-1.5 mb-5">
+                {['Everything in Free', 'Live event notifications', 'Neighbourhood price alerts', 'Pro commune comparison', 'Priority support'].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-xs text-content-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-sky shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="ghost" size="sm" className="w-full" disabled>
+                Coming soon
+              </Button>
             </div>
 
             <div className="p-5 bg-surface-1 border border-amber-border rounded-xl shadow-glow-amber">

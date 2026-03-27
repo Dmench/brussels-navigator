@@ -6,13 +6,13 @@ import { cn } from '@/lib/utils'
 import { NAV_ITEMS } from '@/lib/constants'
 import {
   Home, Map, CheckSquare, Calendar, MapPin,
-  Building2, DollarSign, Globe, Users, FileText
+  Building2, DollarSign, Globe, Users, FileText, Newspaper
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const ICONS: Record<string, LucideIcon> = {
   Home, Map, CheckSquare, Calendar, MapPin,
-  Building2, DollarSign, Globe, Users, FileText
+  Building2, DollarSign, Globe, Users, FileText, Newspaper
 }
 
 export function Sidebar() {

@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { MOBILE_NAV_ITEMS } from '@/lib/constants'
-import { Home, Map, CheckSquare, MapPin, FileText } from 'lucide-react'
+import { Home, Map, CheckSquare, MapPin, Newspaper } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const ICONS: Record<string, LucideIcon> = {
-  Home, Map, CheckSquare, MapPin, FileText
+  Home, Map, CheckSquare, MapPin, Newspaper
 }
 
 export function MobileNav() {

@@ -7,6 +7,8 @@ import { WeatherCard } from '@/components/dashboard/WeatherCard'
 import { CurrencyCard } from '@/components/dashboard/CurrencyCard'
 import { UpcomingEvents } from '@/components/dashboard/UpcomingEvents'
 import { ProgressCard } from '@/components/dashboard/ProgressCard'
+import { ThisWeekPreview } from '@/components/dashboard/ThisWeekPreview'
+import { NewsPreview } from '@/components/dashboard/NewsPreview'
 import { ArrowRight, Sparkles } from 'lucide-react'
 
 export default function HomePage() {
@@ -47,6 +49,8 @@ export default function HomePage() {
       <WeatherCard />
       <CurrencyCard />
       <ProgressCard />
+      <ThisWeekPreview />
+      <NewsPreview />
       <UpcomingEvents />
     </div>
   )

@@ -311,11 +311,23 @@ export function getWeatherCode(code: number): { emoji: string; label: string } {
   return WEATHER_CODES[code] ?? { emoji: '🌡️', label: 'Unknown' }
 }
 
+// ─── Map Landmarks ────────────────────────────────────────────────────────────
+
+export const MAP_LANDMARKS = [
+  { name: 'Grand Place', lat: 50.846, lng: 4.352 },
+  { name: 'EU Quarter / Schuman', lat: 50.844, lng: 4.378 },
+  { name: 'Cinquantenaire', lat: 50.841, lng: 4.395 },
+  { name: 'Flagey', lat: 50.826, lng: 4.374 },
+  { name: 'NATO HQ', lat: 50.880, lng: 4.419 },
+  { name: 'Brussels-Midi', lat: 50.836, lng: 4.336 },
+] as const
+
 // ─── Nav Items ────────────────────────────────────────────────────────────────
 
 export const NAV_ITEMS = [
   { href: '/home', label: 'Home', icon: 'Home' },
   { href: '/plan', label: 'Plan', icon: 'Map' },
+  { href: '/this-week', label: 'This Week', icon: 'Newspaper' },
   { href: '/checklist', label: 'Checklist', icon: 'CheckSquare' },
   { href: '/calendar', label: 'Calendar', icon: 'Calendar' },
   { href: '/areas', label: 'Areas', icon: 'MapPin' },
@@ -330,7 +342,7 @@ export const NAV_ITEMS = [
 export const MOBILE_NAV_ITEMS = [
   { href: '/home', label: 'Home', icon: 'Home' },
   { href: '/plan', label: 'Plan', icon: 'Map' },
+  { href: '/this-week', label: 'This Week', icon: 'Newspaper' },
   { href: '/checklist', label: 'Tasks', icon: 'CheckSquare' },
   { href: '/areas', label: 'Areas', icon: 'MapPin' },
-  { href: '/templates', label: 'Templates', icon: 'FileText' },
 ] as const

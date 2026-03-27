@@ -46,6 +46,21 @@ export default function ChecklistPage() {
         </div>
       </div>
 
+      {percent >= 40 && percent < 100 && (
+        <div className="bg-amber-soft border border-amber-border rounded-xl p-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-display font-bold text-content">You&apos;re making great progress!</p>
+            <p className="text-xs text-content-3 mt-0.5">Unlock the full Move Pack for downloadable checklists, all 7 templates, and commune export.</p>
+          </div>
+          <a
+            href="#upgrade"
+            className="shrink-0 text-xs font-bold text-amber hover:text-amber-dark transition-colors whitespace-nowrap"
+          >
+            Move Pack →
+          </a>
+        </div>
+      )}
+
       {CHECKLIST.map(category => {
         const catDone = category.items.filter(item => completed.includes(item.id)).length
         return (

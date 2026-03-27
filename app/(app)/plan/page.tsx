@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { PLAN_QUESTIONS, PROFILES, EVENTS_2026 } from '@/lib/constants'
 import { getRecommendedCommunes, getTotalMonthlyCost } from '@/lib/plan-logic'
 import { useProfile } from '@/lib/hooks/use-preferences'
 import { DotRating } from '@/components/ui/DotRating'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { ArrowLeft, ExternalLink, Sparkles, X, Check } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Sparkles, X, Check, Share2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { format, parseISO, isAfter, addMonths, startOfMonth } from 'date-fns'
 import type { PlanAnswers, UserProfile, BudgetLevel } from '@/lib/types'
@@ -82,7 +82,30 @@ export default function PlanPage() {
   const [answers, setAnswers] = useState<PlanAnswers>({})
   const [showResult, setShowResult] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const [, setProfile] = useProfile()
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const shareCard = useCallback(async () => {
+    if (!cardRef.current) return
+    setSharing(true)
+    try {
+      const html2canvas = (await import('html2canvas')).default
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const canvas = await html2canvas(cardRef.current, {
+        background: '#111113',
+        scale: 2,
+      } as any)
+      const link = document.createElement('a')
+      link.download = 'brussels-plan.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    } catch {
+      // silently fail — share is a nice-to-have
+    } finally {
+      setSharing(false)
+    }
+  }, [])
 
   const TOTAL_STEPS = PLAN_QUESTIONS.length
   const question = PLAN_QUESTIONS[step]
@@ -118,7 +141,17 @@ export default function PlanPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-2xl font-display font-bold text-content">Your Brussels Plan</h1>
+          <button
+            onClick={shareCard}
+            disabled={sharing}
+            className="ml-auto flex items-center gap-1.5 text-xs text-content-3 hover:text-content-2 transition-colors disabled:opacity-50"
+          >
+            <Share2 className="w-4 h-4" />
+            {sharing ? 'Saving…' : 'Save as image'}
+          </button>
         </div>
+
+        <div ref={cardRef} className="space-y-5">
 
         {/* Communes */}
         <div className="bg-surface-1 border border-amber-border rounded-xl p-4" style={{ boxShadow: '0 0 20px -5px rgba(245,158,11,0.15)' }}>
@@ -190,6 +223,8 @@ export default function PlanPage() {
             </div>
           </div>
         )}
+
+        </div>{/* end cardRef */}
 
         {/* CTA */}
         <div className="bg-surface-1 border border-amber-border rounded-xl p-5 text-center" style={{ boxShadow: '0 0 20px -5px rgba(245,158,11,0.15)' }}>

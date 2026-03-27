@@ -1,14 +1,11 @@
 @import "tailwindcss";
 
-/* Dark mode via .dark class on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Fonts */
   --font-display: var(--font-playfair), Georgia, serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
 
-  /* Light mode — warm, editorial */
   --color-cream: #FDFBF7;
   --color-ivory: #F7F4EE;
   --color-sand: #EDE8DF;
@@ -17,12 +14,10 @@
   --color-espresso: #3D3529;
   --color-ink: #1A1714;
 
-  /* Terracotta accent */
   --color-terracotta: #C4704B;
   --color-terracotta-light: #E8A88A;
   --color-terracotta-dark: #9E5535;
 
-  /* Functional */
   --color-sage: #7A9E7E;
   --color-sage-light: #E8F0E9;
   --color-sky: #6B9BC3;
@@ -30,23 +25,20 @@
   --color-coral: #D4726A;
   --color-coral-light: #F8E8E6;
 
-  /* Dark mode surfaces */
   --color-night: #141210;
   --color-night-1: #1E1C18;
   --color-night-2: #2A2722;
-  --color-night-border: rgba(255, 255, 255, 0.08);
+  --color-night-border: rgba(255,255,255,0.08);
   --color-night-text: #E8E4DC;
   --color-night-muted: #8B8578;
 }
 
-/* Base */
 * { box-sizing: border-box; }
 
 html {
   color-scheme: light;
   background-color: var(--color-cream);
 }
-
 html.dark {
   color-scheme: dark;
   background-color: var(--color-night);
@@ -54,40 +46,6 @@ html.dark {
 
 body {
   font-family: var(--font-body);
-  color: var(--color-espresso);
-  background-color: var(--color-cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-html.dark body {
-  color: var(--color-night-text);
-  background-color: var(--color-night);
-}
-
-/* Prose styles for guide articles */
-.prose-editorial h2 {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-ink);
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-}
-
-html.dark .prose-editorial h2 {
-  color: var(--color-night-text);
-}
-
-.prose-editorial p {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--color-espresso);
-  margin-bottom: 1.25rem;
-  font-weight: 300;
-}
-
-html.dark .prose-editorial p {
-  color: var(--color-night-text);
 }

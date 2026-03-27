@@ -1,6 +1,7 @@
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-type BadgeVariant = 'default' | 'terracotta' | 'sage' | 'sky'
+type BadgeVariant = 'default' | 'terracotta' | 'sage' | 'sky' | 'coral'
 
 interface BadgeProps {
   variant?: BadgeVariant
@@ -8,18 +9,23 @@ interface BadgeProps {
   className?: string
 }
 
+const variantClasses: Record<BadgeVariant, string> = {
+  default: 'border border-sand dark:border-night-border text-walnut dark:text-night-muted bg-ivory dark:bg-night-2',
+  terracotta: 'bg-terracotta/10 text-terracotta-dark dark:bg-terracotta/20 dark:text-terracotta-light border border-terracotta/20',
+  sage: 'bg-sage-light text-sage dark:bg-sage/20 dark:text-sage border border-sage/20',
+  sky: 'bg-sky-light text-sky dark:bg-sky/20 dark:text-sky border border-sky/20',
+  coral: 'bg-coral-light text-coral dark:bg-coral/20 dark:text-coral border border-coral/20',
+}
+
 export function Badge({ variant = 'default', children, className }: BadgeProps) {
-  const base = 'inline-flex items-center text-[11px] font-body font-medium uppercase tracking-[0.15em] px-3 py-1 rounded-full border'
-
-  const variants = {
-    default: 'border-sand text-walnut bg-ivory dark:border-night-border dark:text-night-muted dark:bg-night-2',
-    terracotta: 'border-terracotta/20 text-terracotta bg-terracotta/5',
-    sage: 'border-sage/20 text-sage bg-sage/5',
-    sky: 'border-sky/20 text-sky bg-sky/5',
-  }
-
   return (
-    <span className={cn(base, variants[variant], className)}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide',
+        variantClasses[variant],
+        className
+      )}
+    >
       {children}
     </span>
   )

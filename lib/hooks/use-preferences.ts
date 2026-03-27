@@ -1,41 +1,70 @@
 'use client'
-
-import { useState, useEffect, useCallback } from 'react'
-import type { UserProfile } from '../types'
-
-function usePersisted<T>(key: string, defaultValue: T): [T, (val: T | ((prev: T) => T)) => void] {
-  const [value, setValue] = useState<T>(defaultValue)
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(key)
-      if (stored !== null) setValue(JSON.parse(stored))
-    } catch {}
-  }, [key])
-
-  const set = useCallback((val: T | ((prev: T) => T)) => {
-    setValue(prev => {
-      const next = typeof val === 'function' ? (val as (p: T) => T)(prev) : val
-      try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
-      return next
-    })
-  }, [key])
-
-  return [value, set]
-}
-
-export function useProfile() {
-  return usePersisted<UserProfile | null>('bn-profile', null)
-}
+import { useState, useEffect } from 'react'
 
 export function useCurrency() {
-  return usePersisted<string>('bn-currency', 'USD')
+  const [currency, setCurrencyState] = useState<string>('USD')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    try {
+      const stored = localStorage.getItem('bn-currency')
+      if (stored) setCurrencyState(stored)
+    } catch {}
+  }, [])
+
+  const setCurrency = (code: string) => {
+    setCurrencyState(code)
+    try { localStorage.setItem('bn-currency', code) } catch {}
+  }
+
+  return { currency, setCurrency, mounted }
 }
 
 export function useChecklist() {
-  return usePersisted<string[]>('bn-checklist', [])
+  const [completed, setCompletedState] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    try {
+      const stored = localStorage.getItem('bn-checklist')
+      if (stored) setCompletedState(JSON.parse(stored))
+    } catch {}
+  }, [])
+
+  const toggle = (id: string) => {
+    setCompletedState(prev => {
+      const next = prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+      try { localStorage.setItem('bn-checklist', JSON.stringify(next)) } catch {}
+      return next
+    })
+  }
+
+  const reset = () => {
+    setCompletedState([])
+    try { localStorage.removeItem('bn-checklist') } catch {}
+  }
+
+  return { completed, toggle, reset, mounted }
 }
 
-export function useWaitlistEmail() {
-  return usePersisted<string>('bn-waitlist-email', '')
+export function useWaitlist() {
+  const [email, setEmailState] = useState<string>('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    try {
+      const stored = localStorage.getItem('bn-waitlist')
+      if (stored) setEmailState(stored)
+    } catch {}
+  }, [])
+
+  const setEmail = (e: string) => {
+    setEmailState(e)
+    try { localStorage.setItem('bn-waitlist', e) } catch {}
+  }
+
+  return { email, setEmail, mounted }
 }

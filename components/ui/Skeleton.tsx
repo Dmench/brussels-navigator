@@ -1,7 +1,17 @@
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-export function Skeleton({ className }: { className?: string }) {
+interface SkeletonProps {
+  className?: string
+}
+
+export function Skeleton({ className }: SkeletonProps) {
   return (
-    <div className={cn('animate-pulse rounded-lg bg-sand/60 dark:bg-night-2', className)} />
+    <div
+      className={cn(
+        'animate-pulse bg-sand/60 dark:bg-night-2 rounded-lg',
+        className
+      )}
+    />
   )
 }

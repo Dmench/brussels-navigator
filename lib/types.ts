@@ -1,12 +1,11 @@
-export type UserProfile = 'eu' | 'non-eu' | 'student'
-export type BudgetLevel = 'budget' | 'moderate' | 'comfortable'
 export type Theme = 'light' | 'dark'
 export type Language = 'en' | 'fr'
+export type PostCategory = 'recommendation' | 'question' | 'heads-up'
 
 export interface WeatherData {
   temperature: number
   weathercode: number
-  windspeed: number
+  daily?: { max: number[]; min: number[]; codes: number[] }
 }
 
 export interface ExchangeRates {
@@ -15,53 +14,21 @@ export interface ExchangeRates {
   rates: Record<string, number>
 }
 
-export interface PlanAnswers {
-  profile?: string
-  budget?: string
-  vibe?: string
-  commute?: string
-  move_date?: string
-}
-
-export interface CommuneData {
+export interface NeighbourhoodPost {
   id: string
-  name: string
-  rent: number
-  vibe: string
-  expat: number
-  transit: number
-  green: number
-  safety: number
-  walk: number
-  desc: string
-  lat: number
-  lng: number
-  immoweb: string
+  commune: string
+  category: PostCategory
+  text: string
+  time: string
 }
 
-export interface EventData {
-  date: string
-  title: string
-  type: 'holiday' | 'event' | 'info'
-  desc: string
-}
-
-export interface ChecklistItem {
-  id: string
-  label: string
-  desc: string
-}
-
-export interface ChecklistCategory {
-  cat: string
-  items: readonly ChecklistItem[]
-}
-
-export interface Guide {
+export interface Answer {
   slug: string
   title: string
   category: string
   readTime: string
   excerpt: string
   content: string
+  relatedLinks?: { label: string; href: string }[]
+  officialLinks?: { label: string; href: string }[]
 }

@@ -1,106 +1,120 @@
 'use client'
-
-import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
-import { useProfile } from '@/lib/hooks/use-preferences'
-import { COMMUNES, MAP_LANDMARKS } from '@/lib/constants'
-import { PROFILES } from '@/lib/constants'
+import { useEffect, useRef, useState } from 'react'
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { COMMUNES, LANDMARKS } from '@/lib/constants'
 
-export default function BrusselsMap() {
-  const [profile] = useProfile()
-  const [mounted, setMounted] = useState(false)
-  const [isDark, setIsDark] = useState(false)
+const LIGHT_TILES = {
+  url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}
 
-  const profileInfo = profile ? PROFILES[profile] : null
+const DARK_TILES = {
+  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+}
+
+function isDarkMode() {
+  return document.documentElement.classList.contains('dark')
+}
+
+function TileLayerWithDark() {
+  const map = useMap()
+  const [dark, setDark] = useState(() => isDarkMode())
+  const layerRef = useRef<ReturnType<typeof import('leaflet').tileLayer> | null>(null)
 
   useEffect(() => {
-    setMounted(true)
-    const dark = document.documentElement.classList.contains('dark')
-    setIsDark(dark)
     const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'))
+      setDark(isDarkMode())
     })
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
 
-  if (!mounted) return null
+  useEffect(() => {
+    const L = require('leaflet')
+    if (layerRef.current) {
+      map.removeLayer(layerRef.current)
+    }
+    const tiles = dark ? DARK_TILES : LIGHT_TILES
+    const layer = L.tileLayer(tiles.url, { attribution: tiles.attribution })
+    layer.addTo(map)
+    layerRef.current = layer
+    return () => {
+      if (layerRef.current) {
+        map.removeLayer(layerRef.current)
+      }
+    }
+  }, [dark, map])
 
-  const tileUrl = isDark
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+  return null
+}
 
+export default function BrusselsMap() {
   return (
-    <div
-      style={{ height: 'calc(100vh - 200px)', minHeight: 400 }}
-      className="rounded-2xl overflow-hidden border border-sand/50 dark:border-night-border"
+    <MapContainer
+      center={[50.840, 4.370]}
+      zoom={12}
+      style={{ height: '500px', width: '100%' }}
+      scrollWheelZoom={false}
     >
-      <MapContainer
-        center={[50.845, 4.375]}
-        zoom={12}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          url={tileUrl}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          maxZoom={19}
-        />
+      <TileLayerWithDark />
 
-        {COMMUNES.map(commune => {
-          const isRecommended = profileInfo?.top_communes.includes(commune.id as never)
-          const radius = 8 + commune.expat * 1.5
+      {/* Commune markers */}
+      {COMMUNES.map(commune => (
+        <CircleMarker
+          key={commune.id}
+          center={[commune.lat, commune.lng]}
+          radius={8}
+          pathOptions={{
+            color: '#9E5535',
+            fillColor: '#C4704B',
+            fillOpacity: 0.8,
+            weight: 1.5,
+          }}
+        >
+          <Popup>
+            <div style={{ fontFamily: 'system-ui, sans-serif', minWidth: '160px' }}>
+              <strong style={{ fontSize: '14px' }}>{commune.name}</strong>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#8B7E6A' }}>
+                Avg 1BR: €{commune.rent}/month
+              </p>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#8B7E6A' }}>
+                {commune.vibe}
+              </p>
+              <a
+                href={`https://www.immoweb.be/en/search/apartment/for-rent?countries=BE&localities=${commune.immoweb}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', marginTop: '6px', fontSize: '12px', color: '#C4704B' }}
+              >
+                Search on Immoweb
+              </a>
+            </div>
+          </Popup>
+        </CircleMarker>
+      ))}
 
-          return (
-            <CircleMarker
-              key={commune.id}
-              center={[commune.lat, commune.lng]}
-              radius={radius}
-              pathOptions={{
-                fillColor: isRecommended ? '#7A9E7E' : '#C4704B',
-                fillOpacity: 0.85,
-                color: isRecommended ? '#7A9E7E' : '#C4704B',
-                weight: 1.5,
-              }}
-            >
-              <Popup>
-                <div style={{ fontFamily: 'Georgia, serif', minWidth: 160, padding: '4px 0' }}>
-                  <strong style={{ fontSize: 14, display: 'block', marginBottom: 2 }}>{commune.name}</strong>
-                  <p style={{ margin: '2px 0', fontSize: 12, fontStyle: 'italic', color: '#8B7E6A' }}>{commune.vibe}</p>
-                  <p style={{ margin: '4px 0', fontSize: 13, fontWeight: 700, color: '#C4704B' }}>€{commune.rent}/mo avg</p>
-                  <p style={{ margin: '4px 0', fontSize: 11, color: '#8B7E6A' }}>{commune.desc}</p>
-                  <a
-                    href={`https://www.immoweb.be/en/search/apartment/for-rent/${commune.immoweb}?countries=BE`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: 11, color: '#C4704B', display: 'block', marginTop: 4 }}
-                  >
-                    Search on Immoweb
-                  </a>
-                </div>
-              </Popup>
-            </CircleMarker>
-          )
-        })}
-
-        {MAP_LANDMARKS.map(landmark => (
-          <CircleMarker
-            key={landmark.name}
-            center={[landmark.lat, landmark.lng]}
-            radius={4}
-            pathOptions={{
-              fillColor: '#8B7E6A',
-              fillOpacity: 0.6,
-              color: '#8B7E6A',
-              weight: 1,
-            }}
-          >
-            <Popup>
-              <strong style={{ fontFamily: 'Georgia, serif', fontSize: 12 }}>{landmark.name}</strong>
-            </Popup>
-          </CircleMarker>
-        ))}
-      </MapContainer>
-    </div>
+      {/* Landmark markers */}
+      {LANDMARKS.map(lm => (
+        <CircleMarker
+          key={lm.name}
+          center={[lm.lat, lm.lng]}
+          radius={5}
+          pathOptions={{
+            color: '#3D3529',
+            fillColor: '#8B7E6A',
+            fillOpacity: 0.8,
+            weight: 1.5,
+          }}
+        >
+          <Popup>
+            <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+              <strong style={{ fontSize: '13px' }}>{lm.name}</strong>
+            </div>
+          </Popup>
+        </CircleMarker>
+      ))}
+    </MapContainer>
   )
 }

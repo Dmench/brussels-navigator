@@ -1,32 +1,37 @@
-import { forwardRef } from 'react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
+type Variant = 'primary' | 'secondary' | 'ghost'
+type Size = 'sm' | 'md' | 'lg'
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost'
-  size?: 'sm' | 'md' | 'lg'
-  asChild?: boolean
+  variant?: Variant
+  size?: Size
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', children, ...props }, ref) => {
-    const base = 'inline-flex items-center justify-center rounded-full font-body font-medium transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap'
+const variantClasses: Record<Variant, string> = {
+  primary: 'bg-espresso text-cream rounded-full hover:bg-ink dark:bg-cream dark:text-espresso dark:hover:bg-stone transition-colors',
+  secondary: 'border border-espresso/30 dark:border-night-border text-espresso dark:text-night-text rounded-full hover:bg-sand/50 dark:hover:bg-night-2 transition-colors',
+  ghost: 'text-espresso dark:text-night-text hover:text-ink dark:hover:text-cream rounded-full hover:bg-sand/40 dark:hover:bg-night-2 transition-colors',
+}
 
-    const variants = {
-      primary: 'bg-espresso text-cream hover:bg-ink dark:bg-cream dark:text-espresso dark:hover:bg-white',
-      secondary: 'border border-espresso text-espresso hover:bg-espresso hover:text-cream dark:border-night-text dark:text-night-text dark:hover:bg-night-text dark:hover:text-night',
-      ghost: 'text-walnut hover:text-espresso dark:text-night-muted dark:hover:text-night-text',
-    }
+const sizeClasses: Record<Size, string> = {
+  sm: 'px-4 py-1.5 text-sm',
+  md: 'px-6 py-2.5 text-sm',
+  lg: 'px-8 py-3 text-base',
+}
 
-    const sizes = {
-      sm: 'px-5 py-2 text-sm',
-      md: 'px-7 py-2.5 text-sm',
-      lg: 'px-9 py-3.5 text-base',
-    }
-
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'primary', size = 'md', className, children, ...props }, ref) => {
     return (
       <button
         ref={ref}
-        className={cn(base, variants[variant], sizes[size], className)}
+        className={cn(
+          'inline-flex items-center justify-center font-body font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/50 disabled:opacity-50 disabled:cursor-not-allowed',
+          variantClasses[variant],
+          sizeClasses[size],
+          className
+        )}
         {...props}
       >
         {children}
@@ -34,4 +39,5 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
   }
 )
+
 Button.displayName = 'Button'

@@ -12,14 +12,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Brussels Navigator — Make Brussels make sense',
-  description: 'The community platform for Brussels expats. Tools, answers, events, and local connections.',
+  title: 'Bubl — Your Brussels bubble',
+  description: 'Events, answers, local tips, and the tools you actually need. For everyone who lives in Brussels.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
-      <body className="bg-cream dark:bg-night text-espresso dark:text-night-text font-body antialiased">
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <body className="bg-cream text-espresso font-body antialiased">
         {children}
       </body>
     </html>

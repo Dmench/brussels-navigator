@@ -21,12 +21,114 @@ export const EVENTS_2026 = [
 ] as const
 
 export const RECURRING_EVENTS = [
-  { title: 'Flagey Market', day: 'Sunday', time: 'Morning', location: 'Place Flagey, Ixelles', desc: 'Weekly food and flower market.', category: 'markets' as const },
-  { title: 'Jeu de Balle Flea Market', day: 'Daily', time: '6am–2pm', location: 'Place du Jeu de Balle, Marolles', desc: 'Legendary daily flea market. Best on weekends.', category: 'markets' as const },
-  { title: 'Midi Market', day: 'Sunday', time: 'Morning', location: 'Gare du Midi', desc: 'Huge weekly market with food from around the world.', category: 'markets' as const },
-  { title: 'Brussels Runners', day: 'Saturday', time: '10am', location: 'Bois de la Cambre', desc: 'Free weekly group run. All levels.', category: 'sports' as const },
-  { title: 'Language Exchange — Café Belga', day: 'Wednesday', time: '7pm', location: 'Place Flagey, Ixelles', desc: 'Informal language exchange. FR, EN, NL and more.', category: 'networking' as const },
-  { title: 'Drink and Draw Brussels', day: 'Monthly', time: 'Evening', location: 'Various', desc: 'Casual sketch meetup. Check Facebook for dates.', category: 'networking' as const },
+  {
+    title: 'Flagey Market',
+    day: 'Sunday',
+    time: 'Morning',
+    location: 'Place Flagey, Ixelles',
+    desc: 'Weekly food and flower market. One of the best in Brussels.',
+    category: 'markets' as const,
+    link: null,
+  },
+  {
+    title: 'Jeu de Balle Flea Market',
+    day: 'Daily',
+    time: '6am to 2pm',
+    location: 'Place du Jeu de Balle, Marolles',
+    desc: 'Legendary daily flea market. Best selection on weekends.',
+    category: 'markets' as const,
+    link: null,
+  },
+  {
+    title: 'Midi Market',
+    day: 'Sunday',
+    time: 'Morning',
+    location: 'Gare du Midi',
+    desc: 'Huge weekly market with food from around the world.',
+    category: 'markets' as const,
+    link: null,
+  },
+  {
+    title: 'Brussels Runners',
+    day: 'Saturday',
+    time: '10am',
+    location: 'Bois de la Cambre',
+    desc: 'Free weekly group run. All levels welcome.',
+    category: 'sports' as const,
+    link: null,
+  },
+  {
+    title: 'Language Exchange at Cafe Belga',
+    day: 'Wednesday',
+    time: '7pm',
+    location: 'Place Flagey, Ixelles',
+    desc: 'Informal language exchange. French, English, Dutch, and more. Just show up.',
+    category: 'networking' as const,
+    link: 'https://www.instagram.com/cafebelga/',
+  },
+  {
+    title: 'Drink and Draw Brussels',
+    day: 'Monthly',
+    time: 'Evening',
+    location: 'Various locations',
+    desc: 'Casual sketch meetup at different bars. Check their page for the next date.',
+    category: 'networking' as const,
+    link: 'https://www.instagram.com/drinkanddrawbrussels/',
+  },
+  {
+    title: 'Wecandoo Craft Workshops',
+    day: 'Various',
+    time: 'Various',
+    location: 'Artisan studios across Brussels',
+    desc: 'Hands-on workshops: pottery, beer brewing, chocolate making, woodworking, and more.',
+    category: 'workshops' as const,
+    link: 'https://wecandoo.be/en/ateliers/bruxelles',
+  },
+] as const
+
+export const LOCAL_CREATORS = [
+  {
+    handle: '@into.the.dust',
+    platform: 'Instagram + TikTok',
+    niche: 'Nightlife, events, bars',
+    url: 'https://www.instagram.com/into.the.dust/',
+    desc: 'New bars, parties, and that cozy-but-wild Brussels night out.',
+  },
+  {
+    handle: '@bruxelles.foodguide',
+    platform: 'Instagram',
+    niche: 'Food and hidden gems',
+    url: 'https://www.instagram.com/bruxelles.foodguide/',
+    desc: 'Restaurant and drink recommendations across the city.',
+  },
+  {
+    handle: '@theguidebrussels',
+    platform: 'TikTok',
+    niche: 'Hidden gems and discoveries',
+    url: 'https://www.tiktok.com/@theguidebrussels',
+    desc: 'Mini-guides to lesser-known places and experiences.',
+  },
+  {
+    handle: '@brusselsbynight_',
+    platform: 'Instagram',
+    niche: 'Nightlife and events',
+    url: 'https://www.instagram.com/brusselsbynight_/',
+    desc: 'What is actually happening after dark.',
+  },
+  {
+    handle: '@expats_in_brussels',
+    platform: 'Instagram',
+    niche: 'Practical tips and places',
+    url: 'https://www.instagram.com/expats_in_brussels/',
+    desc: 'Navigating Brussels life as a newcomer.',
+  },
+  {
+    handle: '@brusselstimes',
+    platform: 'Instagram',
+    niche: 'News and events',
+    url: 'https://www.instagram.com/brusselstimes/',
+    desc: 'English-language Belgian news and culture.',
+  },
 ] as const
 
 export const COMMUNES = [
@@ -43,7 +145,7 @@ export const COMMUNES = [
 ] as const
 
 export const COMMUNITIES = [
-  { name: 'Brussels Expats', platform: 'Facebook', members: '65,000+', url: 'https://www.facebook.com/groups/BrusselsExpats/', desc: 'Largest English-speaking expat group. Housing, admin, events, recommendations.' },
+  { name: 'Brussels Expats', platform: 'Facebook', members: '65,000+', url: 'https://www.facebook.com/groups/BrusselsExpats/', desc: 'Largest English-speaking group in Brussels. Housing, admin, events, recommendations.' },
   { name: 'r/brussels', platform: 'Reddit', members: '85,000+', url: 'https://www.reddit.com/r/brussels/', desc: 'Honest opinions, local tips, commune-specific questions.' },
   { name: 'InterNations Brussels', platform: 'InterNations', members: '50,000+', url: 'https://www.internations.org/brussels-expats', desc: 'Organised events and professional networking.' },
   { name: 'Brussels Housing', platform: 'Facebook', members: '30,000+', url: 'https://www.facebook.com/groups/brusselshousing/', desc: 'Apartments direct from landlords. Never pay before viewing.' },
@@ -141,4 +243,164 @@ export const FEATURED_QUESTIONS = [
   { slug: 'cost-of-living', question: 'How much does it cost to live here?' },
   { slug: 'landlord-wont-fix', question: 'My landlord will not fix something. What are my options?' },
   { slug: 'find-english-doctor', question: 'Where do I find an English-speaking doctor?' },
+]
+
+export const SETUP_CHECKLIST = [
+  {
+    phase: 'Before you arrive',
+    intro: 'Get these sorted before landing. It makes the first week much easier.',
+    items: [
+      {
+        id: 'temp-accommodation',
+        label: 'Arrange temporary accommodation for your first 2 to 4 weeks',
+        desc: 'Having a place to land makes everything less stressful. Many people use Spotahome or HousingAnywhere for furnished short-term options.',
+        tip: 'Book flexible cancellation if your plans might change.',
+        links: [
+          { text: 'Spotahome', url: 'https://www.spotahome.com/brussels' },
+          { text: 'HousingAnywhere', url: 'https://housinganywhere.com/s/Brussels--Belgium' },
+        ],
+      },
+      {
+        id: 'visa-check',
+        label: 'Check visa and work permit requirements',
+        desc: 'EU citizens can move freely. Non-EU citizens: your employer usually handles the work permit application, but confirm timelines early.',
+        tip: 'Start this as soon as you have a job offer. The Single Permit process takes 3 to 4 months.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'apostille',
+        label: 'Get apostille on birth certificate if non-EU',
+        desc: 'This official stamp from your home country is required for commune registration. It can take several weeks to obtain.',
+        tip: 'Request it before you leave — you cannot get it from Brussels.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'apps',
+        label: 'Download STIB and Doctena apps',
+        desc: 'STIB is the Brussels public transport app. Doctena helps you find and book doctors, many of whom speak English.',
+        tip: 'Having these ready on arrival saves immediate headaches.',
+        links: [
+          { text: 'STIB', url: 'https://www.stib-mivb.be/' },
+          { text: 'Doctena', url: 'https://www.doctena.be/' },
+        ],
+      },
+    ],
+  },
+  {
+    phase: 'Week one',
+    intro: 'The essentials. Get these done and everything else becomes easier.',
+    items: [
+      {
+        id: 'etat-des-lieux',
+        label: 'Sign rental contract and complete the etat des lieux',
+        desc: 'The etat des lieux is the condition report for your apartment. It protects you when you move out.',
+        tip: 'Photograph absolutely everything. Scratches, marks, appliance conditions. This document determines whether you get your deposit back.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'commune-register',
+        label: 'Register at your commune within 8 working days',
+        desc: 'Every person living in Belgium must register at their local commune. Bring your passport, rental contract, and passport photos.',
+        tip: 'Book your appointment online if possible. Walk-in queues at Ixelles and Saint-Gilles can be over an hour.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'bank-account',
+        label: 'Open a Belgian bank account',
+        desc: 'You need a Belgian bank account for rent, salary, and daily transactions. Main options: BNP Paribas Fortis, KBC, ING, Belfius.',
+        tip: 'Bring your passport, commune registration receipt, and employment contract. Some banks open accounts same day.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'utilities',
+        label: 'Set up utilities and internet',
+        desc: 'Contact your energy provider for electricity and gas. Arrange internet separately through Proximus, Telenet, or Orange.',
+        tip: 'Ask your landlord for the EAN meter numbers. Internet installation typically takes 1 to 2 weeks.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'rental-guarantee',
+        label: 'Register rental guarantee in a blocked bank account',
+        desc: 'Belgian law requires 2 to 3 months rent as a deposit, held in a blocked account at a bank. Never pay the deposit directly to the landlord.',
+        tip: 'Your bank can set this up when you open your account.',
+        links: [] as { text: string; url: string }[],
+      },
+    ],
+  },
+  {
+    phase: 'First month',
+    intro: 'Healthcare, transport, and settling in.',
+    items: [
+      {
+        id: 'mutuelle',
+        label: 'Join a mutuelle within 3 months of starting work',
+        desc: 'A mutuelle is the Belgian health insurance top-up. It covers a portion of your medical costs. Main options: Partenamut, Solidaris, CM.',
+        tip: 'Bring your Annex 8 or eID and your employer NSSO number.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'gp-register',
+        label: 'Register with a GP',
+        desc: 'Find and register with a general practitioner near your home. Many doctors in central Brussels speak English.',
+        tip: 'Use Doctena to search by language and location.',
+        links: [
+          { text: 'Doctena', url: 'https://www.doctena.be/' },
+        ],
+      },
+      {
+        id: 'mobib',
+        label: 'Get a MOBIB card and set up STIB monthly pass',
+        desc: 'MOBIB is the rechargeable transport card for Brussels. Monthly pass is 49 euros. Available at any metro station.',
+        tip: 'Check if your employer covers transport costs via the third-party payer scheme.',
+        links: [
+          { text: 'STIB', url: 'https://www.stib-mivb.be/' },
+        ],
+      },
+      {
+        id: 'police-visit',
+        label: 'Be home for the police verification visit',
+        desc: 'After commune registration, a local police officer will visit your address to confirm you live there. This usually happens within 2 weeks.',
+        tip: 'They may not call ahead. Try to be home during daytime hours.',
+        links: [] as { text: string; url: string }[],
+      },
+      {
+        id: 'eid-collect',
+        label: 'Collect your eID or residence card from the commune',
+        desc: 'Once the police verify your address, the commune will notify you to collect your Belgian residence card. Takes 2 to 4 weeks.',
+        tip: 'Bring your passport and any receipt from your initial registration.',
+        links: [] as { text: string; url: string }[],
+      },
+    ],
+  },
+  {
+    phase: 'First 90 days',
+    intro: "The longer-term admin. No rush, but don't forget.",
+    items: [
+      {
+        id: 'tax-register',
+        label: 'Register with the Belgian tax authority via MyMinfin',
+        desc: 'You will need to file a Belgian tax return. MyMinfin is the official platform. If you qualify for the Belgian expat tax regime, apply within 3 months of starting work.',
+        tip: 'Consider hiring a tax advisor for your first year. It typically costs 200 to 500 euros and avoids mistakes.',
+        links: [
+          { text: 'MyMinfin', url: 'https://eservices.minfin.fgov.be/myminfin-web/' },
+        ],
+      },
+      {
+        id: 'lease-register',
+        label: 'Register your lease at MyRent',
+        desc: 'Belgian leases should be registered at the tax office. This is free and takes about 5 minutes online. Your landlord may have already done this.',
+        tip: 'If your landlord has not registered it, do it yourself to protect your rights.',
+        links: [
+          { text: 'MyRent', url: 'https://financien.belgium.be/en/private-individuals/housing/renting/registration' },
+        ],
+      },
+      {
+        id: 'language-classes',
+        label: 'Enrol in French or Dutch classes',
+        desc: 'Many communes offer free or subsidised language courses for residents. Private options include Alliance Francaise and CVO Brussel.',
+        tip: 'Even basic French dramatically improves daily life in Brussels.',
+        links: [] as { text: string; url: string }[],
+      },
+    ],
+  },
 ]

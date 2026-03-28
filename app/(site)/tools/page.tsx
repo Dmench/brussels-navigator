@@ -14,12 +14,12 @@ const TOOLS = [
   {
     href: '/tools/checklist',
     title: 'Setup checklist',
-    desc: 'The 17-item checklist for getting set up in Brussels. Tracks your progress locally.',
+    desc: 'The step-by-step checklist for getting set up in Brussels. Tracks your progress locally.',
   },
   {
     href: '/tools/neighborhoods',
     title: 'Neighbourhood guide',
-    desc: 'Compare all 10 Brussels communes on rent, transit, safety, green space, and expat density.',
+    desc: 'Compare all 10 Brussels communes on rent, transit, safety, green space, and more.',
   },
   {
     href: '/tools/map',
@@ -31,11 +31,11 @@ const TOOLS = [
 export default function ToolsPage() {
   return (
     <div>
-      <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-2">Tools</p>
-      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso dark:text-night-text mb-4">
+      <p className="text-walnut text-xs uppercase tracking-widest mb-2">Tools</p>
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-4">
         Tools for getting settled
       </h1>
-      <p className="text-walnut dark:text-night-muted text-lg max-w-xl mb-10">
+      <p className="text-walnut text-lg max-w-xl mb-10">
         Practical tools for navigating Brussels life — from arrival to feeling at home.
       </p>
 
@@ -44,12 +44,12 @@ export default function ToolsPage() {
           <Link
             key={tool.href}
             href={tool.href}
-            className="group bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-6 hover:border-terracotta/30 transition-colors"
+            className="group bg-ivory border border-sand/50 rounded-2xl p-6 hover:border-terracotta/30 transition-colors"
           >
-            <h2 className="font-display text-xl font-semibold text-espresso dark:text-night-text mb-2 group-hover:text-terracotta transition-colors">
+            <h2 className="font-display text-xl font-semibold text-espresso mb-2 group-hover:text-terracotta transition-colors">
               {tool.title}
             </h2>
-            <p className="text-walnut dark:text-night-muted text-sm leading-relaxed">{tool.desc}</p>
+            <p className="text-walnut text-sm leading-relaxed">{tool.desc}</p>
           </Link>
         ))}
       </div>

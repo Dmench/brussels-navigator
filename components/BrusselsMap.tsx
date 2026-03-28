@@ -1,54 +1,7 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { COMMUNES, LANDMARKS } from '@/lib/constants'
-
-const LIGHT_TILES = {
-  url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}
-
-const DARK_TILES = {
-  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-}
-
-function isDarkMode() {
-  return document.documentElement.classList.contains('dark')
-}
-
-function TileLayerWithDark() {
-  const map = useMap()
-  const [dark, setDark] = useState(() => isDarkMode())
-  const layerRef = useRef<ReturnType<typeof import('leaflet').tileLayer> | null>(null)
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setDark(isDarkMode())
-    })
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const L = require('leaflet')
-    if (layerRef.current) {
-      map.removeLayer(layerRef.current)
-    }
-    const tiles = dark ? DARK_TILES : LIGHT_TILES
-    const layer = L.tileLayer(tiles.url, { attribution: tiles.attribution })
-    layer.addTo(map)
-    layerRef.current = layer
-    return () => {
-      if (layerRef.current) {
-        map.removeLayer(layerRef.current)
-      }
-    }
-  }, [dark, map])
-
-  return null
-}
 
 export default function BrusselsMap() {
   return (
@@ -58,7 +11,10 @@ export default function BrusselsMap() {
       style={{ height: '500px', width: '100%' }}
       scrollWheelZoom={false}
     >
-      <TileLayerWithDark />
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
 
       {/* Commune markers */}
       {COMMUNES.map(commune => (

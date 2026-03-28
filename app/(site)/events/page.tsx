@@ -11,6 +11,7 @@ const FILTER_TABS = [
   { key: 'markets', label: 'Markets' },
   { key: 'networking', label: 'Networking' },
   { key: 'sports', label: 'Sports' },
+  { key: 'workshops', label: 'Workshops' },
   { key: 'holidays', label: 'Holidays' },
 ]
 
@@ -60,8 +61,8 @@ export default function EventsPage() {
 
   return (
     <div>
-      <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-2">Calendar</p>
-      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso dark:text-night-text mb-8">
+      <p className="text-walnut text-xs uppercase tracking-widest mb-2">Calendar</p>
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-8">
         What is on in Brussels
       </h1>
 
@@ -74,8 +75,8 @@ export default function EventsPage() {
             className={cn(
               'px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
               filter === tab.key
-                ? 'bg-espresso text-cream dark:bg-cream dark:text-espresso'
-                : 'border border-sand dark:border-night-border text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+                ? 'bg-espresso text-cream'
+                : 'border border-sand text-walnut hover:text-espresso'
             )}
           >
             {tab.label}
@@ -88,26 +89,26 @@ export default function EventsPage() {
           {/* Calendar events */}
           {(filter === 'all' || filter === 'week' || filter === 'month' || filter === 'holidays') && (
             <section>
-              <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-4">
+              <h2 className="font-display text-2xl font-semibold text-espresso mb-4">
                 {filter === 'week' ? 'This week' : filter === 'month' ? 'This month' : filter === 'holidays' ? 'Public holidays' : 'Upcoming events'}
               </h2>
               {filteredCalendar.length === 0 ? (
-                <p className="text-walnut dark:text-night-muted text-sm">No events match this filter.</p>
+                <p className="text-walnut text-sm">No events match this filter.</p>
               ) : (
-                <div className="border border-sand/50 dark:border-night-border rounded-2xl overflow-hidden divide-y divide-sand/50 dark:divide-night-border">
+                <div className="border border-sand/30 rounded-2xl overflow-hidden divide-y divide-sand/30">
                   {filteredCalendar.map(event => (
                     <div key={event.date + event.title} className="flex gap-4 px-5 py-4">
                       <div className="w-28 shrink-0">
-                        <p className="text-xs text-walnut dark:text-night-muted leading-relaxed">{formatDate(event.date)}</p>
+                        <p className="text-xs text-walnut leading-relaxed">{formatDate(event.date)}</p>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center flex-wrap gap-2 mb-1">
-                          <p className="text-sm font-medium text-espresso dark:text-night-text">{event.title}</p>
+                          <p className="text-sm font-medium text-espresso">{event.title}</p>
                           <Badge variant={event.type === 'holiday' ? 'sage' : 'terracotta'}>
                             {event.type}
                           </Badge>
                         </div>
-                        <p className="text-xs text-walnut dark:text-night-muted">{event.desc}</p>
+                        <p className="text-xs text-walnut">{event.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -119,26 +120,36 @@ export default function EventsPage() {
           {/* Recurring events */}
           {filteredRecurring.length > 0 && (
             <section>
-              <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-4">
+              <h2 className="font-display text-2xl font-semibold text-espresso mb-4">
                 Regular events
               </h2>
               <div className="space-y-3">
                 {filteredRecurring.map(event => (
                   <div
                     key={event.title}
-                    className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl px-5 py-4"
+                    className="bg-ivory border border-sand/30 rounded-2xl px-5 py-4"
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center flex-wrap gap-2 mb-1">
-                          <p className="text-sm font-medium text-espresso dark:text-night-text">{event.title}</p>
+                          <p className="text-sm font-medium text-espresso">{event.title}</p>
                           <Badge>{event.day}</Badge>
                           <Badge variant={event.category === 'markets' ? 'terracotta' : event.category === 'sports' ? 'sage' : 'sky'}>
                             {event.category}
                           </Badge>
                         </div>
-                        <p className="text-xs text-walnut dark:text-night-muted mb-1">{event.time} · {event.location}</p>
-                        <p className="text-xs text-walnut dark:text-night-muted">{event.desc}</p>
+                        <p className="text-xs text-walnut mb-1">{event.time} · {event.location}</p>
+                        <p className="text-xs text-walnut mb-2">{event.desc}</p>
+                        {event.link && (
+                          <a
+                            href={event.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-terracotta text-xs hover:text-terracotta-dark transition-colors link-hover"
+                          >
+                            See details
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -150,15 +161,15 @@ export default function EventsPage() {
 
         {/* Sidebar: public holidays */}
         <div>
-          <div className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5">
-            <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-4">2026 Public holidays</p>
+          <div className="bg-ivory border border-sand/30 rounded-2xl p-5">
+            <p className="text-walnut text-xs uppercase tracking-widest mb-4">2026 Public holidays</p>
             <div className="space-y-2">
               {publicHolidays.map(h => (
                 <div key={h.date} className="flex items-start gap-3">
-                  <span className="text-xs text-walnut dark:text-night-muted w-20 shrink-0 pt-0.5">
+                  <span className="text-xs text-walnut w-20 shrink-0 pt-0.5">
                     {new Date(h.date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                   </span>
-                  <span className="text-xs text-espresso dark:text-night-text">{h.title}</span>
+                  <span className="text-xs text-espresso">{h.title}</span>
                 </div>
               ))}
             </div>

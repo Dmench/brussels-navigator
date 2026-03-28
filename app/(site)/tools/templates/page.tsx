@@ -33,7 +33,7 @@ function TemplateEditor({ template, language }: { template: Template; language: 
 
   return (
     <div>
-      <div className="mb-5 p-5 bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl font-body text-sm leading-relaxed text-espresso dark:text-night-text whitespace-pre-wrap">
+      <div className="mb-5 p-5 bg-ivory border border-sand/50 rounded-2xl font-body text-sm leading-relaxed text-espresso whitespace-pre-wrap">
         {parts.map((part, i) => {
           const match = part.match(/^\{([a-z_]+)\}$/)
           if (match) {
@@ -56,7 +56,7 @@ function TemplateEditor({ template, language }: { template: Template; language: 
       </div>
       <button
         onClick={handleCopy}
-        className="px-6 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink dark:bg-cream dark:text-espresso dark:hover:bg-stone transition-colors"
+        className="px-6 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink transition-colors"
       >
         {copied ? 'Copied!' : 'Copy to clipboard'}
       </button>
@@ -77,12 +77,12 @@ function ProModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-ink/50">
-      <div className="bg-cream dark:bg-night-1 border border-sand dark:border-night-border rounded-2xl p-8 max-w-md w-full">
-        <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-2">
-          Navigator Pro
+      <div className="bg-cream border border-sand rounded-2xl p-8 max-w-md w-full">
+        <h2 className="font-display text-2xl font-semibold text-espresso mb-2">
+          Bubl Pro
         </h2>
-        <p className="text-walnut dark:text-night-muted text-sm mb-6 leading-relaxed">
-          This template is part of Navigator Pro — a full library of ready-to-send letters for every situation.
+        <p className="text-walnut text-sm mb-6 leading-relaxed">
+          This template is part of Bubl Pro — a full library of ready-to-send letters for every situation.
           Join the waitlist and we will let you know when it launches.
         </p>
         {!saved ? (
@@ -92,11 +92,11 @@ function ProModal({ onClose }: { onClose: () => void }) {
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="your@email.com"
-              className="flex-1 px-4 py-2.5 rounded-full border border-sand dark:border-night-border bg-cream dark:bg-night text-espresso dark:text-night-text text-sm focus:outline-none focus:border-terracotta/50"
+              className="flex-1 px-4 py-2.5 rounded-full border border-sand bg-cream text-espresso text-sm focus:outline-none focus:border-terracotta/50"
             />
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink dark:bg-cream dark:text-espresso transition-colors"
+              className="px-5 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink transition-colors"
             >
               Join
             </button>
@@ -106,7 +106,7 @@ function ProModal({ onClose }: { onClose: () => void }) {
         )}
         <button
           onClick={onClose}
-          className="mt-4 text-walnut dark:text-night-muted text-sm hover:text-espresso dark:hover:text-night-text transition-colors"
+          className="mt-4 text-walnut text-sm hover:text-espresso transition-colors"
         >
           Close
         </button>
@@ -133,24 +133,24 @@ export default function TemplatesPage() {
 
   return (
     <div>
-      <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-2">Tools</p>
-      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso dark:text-night-text mb-4">
+      <p className="text-walnut text-xs uppercase tracking-widest mb-2">Tools</p>
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-4">
         Letter templates
       </h1>
-      <p className="text-walnut dark:text-night-muted text-base mb-8 max-w-xl">
+      <p className="text-walnut text-base mb-8 max-w-xl">
         Professional letters for every situation. Fill in the fields and copy.
       </p>
 
       {/* Step 1: Select recipient */}
       {!selectedCategory && (
         <div>
-          <p className="text-walnut dark:text-night-muted text-sm mb-4">I need to write to my...</p>
+          <p className="text-walnut text-sm mb-4">I need to write to my...</p>
           <div className="flex flex-wrap gap-3">
             {TEMPLATE_CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className="px-6 py-3 bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl text-sm font-medium text-espresso dark:text-night-text hover:border-terracotta/30 hover:text-terracotta transition-colors"
+                className="px-6 py-3 bg-ivory border border-sand/50 rounded-2xl text-sm font-medium text-espresso hover:border-terracotta/30 hover:text-terracotta transition-colors"
               >
                 {cat.label}
               </button>
@@ -164,11 +164,11 @@ export default function TemplatesPage() {
         <div>
           <button
             onClick={() => setSelectedCategory(null)}
-            className="text-walnut dark:text-night-muted text-sm hover:text-espresso dark:hover:text-night-text transition-colors mb-6"
+            className="text-walnut text-sm hover:text-espresso transition-colors mb-6"
           >
             Back
           </button>
-          <p className="text-walnut dark:text-night-muted text-sm mb-4">
+          <p className="text-walnut text-sm mb-4">
             I want to...
           </p>
           <div className="flex flex-wrap gap-3">
@@ -176,11 +176,11 @@ export default function TemplatesPage() {
               <button
                 key={t.id}
                 onClick={() => handleTemplateSelect(t)}
-                className="group px-6 py-3 bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl text-sm text-espresso dark:text-night-text hover:border-terracotta/30 hover:text-terracotta transition-colors text-left"
+                className="group px-6 py-3 bg-ivory border border-sand/50 rounded-2xl text-sm text-espresso hover:border-terracotta/30 hover:text-terracotta transition-colors text-left"
               >
                 <span>{t.title}</span>
                 {t.tier === 'pro' && (
-                  <span className="ml-2 text-xs text-walnut dark:text-night-muted border border-walnut/30 dark:border-night-border rounded-full px-2 py-0.5">Pro</span>
+                  <span className="ml-2 text-xs text-walnut border border-walnut/30 rounded-full px-2 py-0.5">Pro</span>
                 )}
               </button>
             ))}
@@ -193,13 +193,13 @@ export default function TemplatesPage() {
         <div>
           <button
             onClick={() => setSelectedTemplate(null)}
-            className="text-walnut dark:text-night-muted text-sm hover:text-espresso dark:hover:text-night-text transition-colors mb-6"
+            className="text-walnut text-sm hover:text-espresso transition-colors mb-6"
           >
             Back
           </button>
 
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-xl font-semibold text-espresso dark:text-night-text">
+            <h2 className="font-display text-xl font-semibold text-espresso">
               {language === 'fr' ? selectedTemplate.titleFr : selectedTemplate.title}
             </h2>
             <div className="flex gap-2">
@@ -210,8 +210,8 @@ export default function TemplatesPage() {
                   className={cn(
                     'px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
                     language === l
-                      ? 'bg-espresso text-cream dark:bg-cream dark:text-espresso'
-                      : 'border border-sand dark:border-night-border text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+                      ? 'bg-espresso text-cream'
+                      : 'border border-sand text-walnut hover:text-espresso'
                   )}
                 >
                   {l === 'en' ? 'English' : 'Français'}

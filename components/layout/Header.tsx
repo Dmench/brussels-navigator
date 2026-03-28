@@ -3,7 +3,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
@@ -20,28 +19,26 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-cream/95 dark:bg-night/95 backdrop-blur-sm border-b border-sand/50 dark:border-night-border">
+      <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-sand/50">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="flex items-center justify-between h-14">
-            {/* Logo */}
             <Link
               href="/"
-              className="font-display font-semibold text-lg text-espresso dark:text-night-text hover:text-terracotta dark:hover:text-terracotta transition-colors"
+              className="font-display font-semibold text-lg text-espresso hover:text-terracotta transition-colors"
             >
-              Brussels Navigator
+              Bubl
             </Link>
 
-            {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-6">
               {NAV_LINKS.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'text-sm transition-colors',
+                    'text-sm transition-colors link-hover',
                     pathname.startsWith(link.href)
-                      ? 'text-espresso dark:text-night-text font-medium'
-                      : 'text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+                      ? 'text-espresso font-medium'
+                      : 'text-walnut hover:text-espresso'
                   )}
                 >
                   {link.label}
@@ -49,35 +46,30 @@ export function Header() {
               ))}
             </nav>
 
-            {/* Right side */}
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setMobileOpen(true)}
-                className="md:hidden p-2 rounded-full text-walnut dark:text-night-muted hover:bg-sand/40 dark:hover:bg-night-2 transition-colors"
-                aria-label="Open menu"
-              >
-                <Menu size={20} />
-              </button>
-            </div>
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="md:hidden p-2 rounded-full text-walnut hover:bg-sand/40 transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-cream dark:bg-night flex flex-col">
-          <div className="flex items-center justify-between h-14 px-6 border-b border-sand/50 dark:border-night-border">
+        <div className="fixed inset-0 z-50 bg-cream flex flex-col">
+          <div className="flex items-center justify-between h-14 px-6 border-b border-sand/50">
             <Link
               href="/"
-              className="font-display font-semibold text-lg text-espresso dark:text-night-text"
+              className="font-display font-semibold text-lg text-espresso"
               onClick={() => setMobileOpen(false)}
             >
-              Brussels Navigator
+              Bubl
             </Link>
             <button
               onClick={() => setMobileOpen(false)}
-              className="p-2 rounded-full text-walnut dark:text-night-muted hover:bg-sand/40 dark:hover:bg-night-2 transition-colors"
+              className="p-2 rounded-full text-walnut hover:bg-sand/40 transition-colors"
               aria-label="Close menu"
             >
               <X size={20} />
@@ -92,7 +84,7 @@ export function Header() {
                   'text-2xl font-display transition-colors',
                   pathname.startsWith(link.href)
                     ? 'text-terracotta'
-                    : 'text-espresso dark:text-night-text hover:text-terracotta'
+                    : 'text-espresso hover:text-terracotta'
                 )}
                 onClick={() => setMobileOpen(false)}
               >
@@ -100,9 +92,6 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="px-6 pb-8 mt-auto">
-            <ThemeToggle />
-          </div>
         </div>
       )}
     </>

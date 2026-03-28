@@ -67,15 +67,15 @@ export default function ConnectPage() {
 
   return (
     <div>
-      <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-2">Community</p>
-      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso dark:text-night-text mb-10">
+      <p className="text-walnut text-xs uppercase tracking-widest mb-2">Community</p>
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-10">
         Connect
       </h1>
 
       <div className="space-y-12">
         {/* Section 1: Find your people */}
         <section>
-          <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-4">
+          <h2 className="font-display text-2xl font-semibold text-espresso mb-4">
             Find your people
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -85,20 +85,20 @@ export default function ConnectPage() {
                 href={c.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
+                className="group bg-ivory border border-sand/50 rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <p className="text-sm font-medium text-espresso dark:text-night-text group-hover:text-terracotta transition-colors">
+                    <p className="text-sm font-medium text-espresso group-hover:text-terracotta transition-colors">
                       {c.name}
                     </p>
                     {c.members && (
-                      <p className="text-xs text-walnut dark:text-night-muted mt-0.5">{c.members} members</p>
+                      <p className="text-xs text-walnut mt-0.5">{c.members} members</p>
                     )}
                   </div>
                   <Badge variant={PLATFORM_BADGE[c.platform] ?? 'default'}>{c.platform}</Badge>
                 </div>
-                <p className="text-xs text-walnut dark:text-night-muted leading-relaxed">{c.desc}</p>
+                <p className="text-xs text-walnut leading-relaxed">{c.desc}</p>
               </a>
             ))}
           </div>
@@ -106,21 +106,21 @@ export default function ConnectPage() {
 
         {/* Section 2: Regular meetups */}
         <section>
-          <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-4">
+          <h2 className="font-display text-2xl font-semibold text-espresso mb-4">
             Regular meetups
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {networkingEvents.map(event => (
               <div
                 key={event.title}
-                className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-4"
+                className="bg-ivory border border-sand/50 rounded-2xl p-4"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-espresso dark:text-night-text">{event.title}</p>
+                  <p className="text-sm font-medium text-espresso">{event.title}</p>
                   <Badge>{event.day}</Badge>
                 </div>
-                <p className="text-xs text-walnut dark:text-night-muted mb-1">{event.time} · {event.location}</p>
-                <p className="text-xs text-walnut dark:text-night-muted">{event.desc}</p>
+                <p className="text-xs text-walnut mb-1">{event.time} · {event.location}</p>
+                <p className="text-xs text-walnut">{event.desc}</p>
               </div>
             ))}
           </div>
@@ -128,21 +128,21 @@ export default function ConnectPage() {
 
         {/* Section 3: Neighbourhood board */}
         <section>
-          <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-2">
+          <h2 className="font-display text-2xl font-semibold text-espresso mb-2">
             Neighbourhood board
           </h2>
-          <p className="text-walnut dark:text-night-muted text-sm mb-6">
+          <p className="text-walnut text-sm mb-6">
             Local tips, questions, and heads-up from Brussels residents.
           </p>
 
           {/* Post form */}
-          <div className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 mb-6">
-            <p className="text-sm font-medium text-espresso dark:text-night-text mb-4">Share something</p>
+          <div className="bg-ivory border border-sand/50 rounded-2xl p-5 mb-6">
+            <p className="text-sm font-medium text-espresso mb-4">Share something</p>
             <div className="space-y-3">
               <select
                 value={newPost.commune}
                 onChange={e => setNewPost(p => ({ ...p, commune: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-xl border border-sand dark:border-night-border bg-cream dark:bg-night text-espresso dark:text-night-text text-sm focus:outline-none focus:border-terracotta/50"
+                className="w-full px-4 py-2.5 rounded-xl border border-sand bg-cream text-espresso text-sm focus:outline-none focus:border-terracotta/50"
               >
                 <option value="">Select commune</option>
                 {COMMUNES.map(c => (
@@ -161,7 +161,7 @@ export default function ConnectPage() {
                         ? cat === 'recommendation' ? 'bg-sage/20 text-sage border border-sage/30'
                           : cat === 'question' ? 'bg-sky/20 text-sky border border-sky/30'
                           : 'bg-terracotta/20 text-terracotta border border-terracotta/30'
-                        : 'border border-sand dark:border-night-border text-walnut dark:text-night-muted hover:border-espresso/30'
+                        : 'border border-sand text-walnut hover:border-espresso/30'
                     )}
                   >
                     {cat}
@@ -175,15 +175,15 @@ export default function ConnectPage() {
                   onChange={e => setNewPost(p => ({ ...p, text: e.target.value.slice(0, 280) }))}
                   placeholder="What do you want to share?"
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl border border-sand dark:border-night-border bg-cream dark:bg-night text-espresso dark:text-night-text placeholder:text-walnut/50 text-sm focus:outline-none focus:border-terracotta/50 resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-sand bg-cream text-espresso placeholder:text-walnut/50 text-sm focus:outline-none focus:border-terracotta/50 resize-none"
                 />
-                <p className="text-xs text-walnut dark:text-night-muted text-right mt-1">{newPost.text.length}/280</p>
+                <p className="text-xs text-walnut text-right mt-1">{newPost.text.length}/280</p>
               </div>
 
               <button
                 onClick={submitPost}
                 disabled={!newPost.commune || !newPost.text.trim()}
-                className="px-6 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink dark:bg-cream dark:text-espresso dark:hover:bg-stone transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 bg-espresso text-cream rounded-full text-sm font-medium hover:bg-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {submitted ? 'Posted' : 'Post anonymously'}
               </button>
@@ -196,7 +196,7 @@ export default function ConnectPage() {
             <select
               value={selectedCommune}
               onChange={e => setSelectedCommune(e.target.value)}
-              className="px-4 py-1.5 rounded-full border border-sand dark:border-night-border bg-cream dark:bg-night text-espresso dark:text-night-text text-sm focus:outline-none focus:border-terracotta/50"
+              className="px-4 py-1.5 rounded-full border border-sand bg-cream text-espresso text-sm focus:outline-none focus:border-terracotta/50"
             >
               {COMMUNE_NAMES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -209,8 +209,8 @@ export default function ConnectPage() {
                 className={cn(
                   'px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-colors',
                   postFilter === cat
-                    ? 'bg-espresso text-cream dark:bg-cream dark:text-espresso'
-                    : 'border border-sand dark:border-night-border text-walnut dark:text-night-muted hover:text-espresso dark:hover:text-night-text'
+                    ? 'bg-espresso text-cream'
+                    : 'border border-sand text-walnut hover:text-espresso'
                 )}
               >
                 {cat === 'all' ? 'All posts' : cat}
@@ -221,19 +221,19 @@ export default function ConnectPage() {
           {/* Posts feed */}
           <div className="space-y-3">
             {filteredPosts.length === 0 ? (
-              <p className="text-walnut dark:text-night-muted text-sm py-8 text-center">No posts match this filter.</p>
+              <p className="text-walnut text-sm py-8 text-center">No posts match this filter.</p>
             ) : (
               filteredPosts.map(post => (
                 <div
                   key={post.id}
-                  className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl px-5 py-4"
+                  className="bg-ivory border border-sand/50 rounded-2xl px-5 py-4"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant={CATEGORY_COLORS[post.category]}>{post.category}</Badge>
-                    <span className="text-xs text-walnut dark:text-night-muted">{post.commune}</span>
-                    <span className="text-xs text-walnut dark:text-night-muted ml-auto">{post.time}</span>
+                    <span className="text-xs text-walnut">{post.commune}</span>
+                    <span className="text-xs text-walnut ml-auto">{post.time}</span>
                   </div>
-                  <p className="text-sm text-espresso dark:text-night-text leading-relaxed">{post.text}</p>
+                  <p className="text-sm text-espresso leading-relaxed">{post.text}</p>
                 </div>
               ))
             )}
@@ -242,7 +242,7 @@ export default function ConnectPage() {
 
         {/* Section 4: English news */}
         <section>
-          <h2 className="font-display text-2xl font-semibold text-espresso dark:text-night-text mb-4">
+          <h2 className="font-display text-2xl font-semibold text-espresso mb-4">
             English news
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -250,19 +250,19 @@ export default function ConnectPage() {
               href="https://www.brusselstimes.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
+              className="group bg-ivory border border-sand/50 rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
             >
-              <p className="font-medium text-sm text-espresso dark:text-night-text group-hover:text-terracotta transition-colors mb-1">The Brussels Times</p>
-              <p className="text-xs text-walnut dark:text-night-muted">English-language Belgian news and analysis</p>
+              <p className="font-medium text-sm text-espresso group-hover:text-terracotta transition-colors mb-1">The Brussels Times</p>
+              <p className="text-xs text-walnut">English-language Belgian news and analysis</p>
             </a>
             <a
               href="https://www.thebulletin.be/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
+              className="group bg-ivory border border-sand/50 rounded-2xl p-5 hover:border-terracotta/30 transition-colors"
             >
-              <p className="font-medium text-sm text-espresso dark:text-night-text group-hover:text-terracotta transition-colors mb-1">The Bulletin</p>
-              <p className="text-xs text-walnut dark:text-night-muted">English-language magazine on Belgian life and culture</p>
+              <p className="font-medium text-sm text-espresso group-hover:text-terracotta transition-colors mb-1">The Bulletin</p>
+              <p className="text-xs text-walnut">English-language magazine on Belgian life and culture</p>
             </a>
           </div>
         </section>

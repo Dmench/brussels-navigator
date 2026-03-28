@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { Answer } from '@/lib/types'
 import { Badge } from '@/components/ui/Badge'
-import { cn } from '@/lib/utils'
 
 const CATEGORY_BADGE_MAP: Record<string, 'default' | 'terracotta' | 'sage' | 'sky' | 'coral'> = {
   Administration: 'sky',
@@ -19,13 +18,13 @@ function renderContent(content: string) {
   return paragraphs.map((para, i) => {
     if (para.startsWith('## ')) {
       return (
-        <h2 key={i} className="font-display text-xl font-semibold text-espresso dark:text-night-text mt-8 mb-3">
+        <h2 key={i} className="font-display text-xl font-semibold text-espresso mt-8 mb-3">
           {para.slice(3)}
         </h2>
       )
     }
     return (
-      <p key={i} className="text-espresso dark:text-night-text leading-relaxed mb-4">
+      <p key={i} className="text-espresso leading-relaxed mb-4">
         {para}
       </p>
     )
@@ -57,7 +56,7 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
       {/* Back */}
       <Link
         href="/answers"
-        className="inline-flex items-center gap-1 text-walnut dark:text-night-muted text-sm hover:text-espresso dark:hover:text-night-text transition-colors mb-8"
+        className="inline-flex items-center gap-1 text-walnut text-sm hover:text-espresso transition-colors mb-8"
       >
         Back to answers
       </Link>
@@ -68,11 +67,11 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
           <Badge variant={CATEGORY_BADGE_MAP[answer.category] ?? 'default'}>
             {answer.category}
           </Badge>
-          <span className="text-walnut dark:text-night-muted text-xs">{answer.readTime} read</span>
-          <span className="text-walnut dark:text-night-muted text-xs">·</span>
-          <span className="text-walnut dark:text-night-muted text-xs">Last verified March 2026</span>
+          <span className="text-walnut text-xs">{answer.readTime} read</span>
+          <span className="text-walnut text-xs">·</span>
+          <span className="text-walnut text-xs">Last verified March 2026</span>
         </div>
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-espresso dark:text-night-text leading-tight">
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-espresso leading-tight">
           {answer.title}
         </h1>
       </div>
@@ -84,8 +83,8 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
 
       {/* Official links */}
       {answer.officialLinks && answer.officialLinks.length > 0 && (
-        <div className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 mb-8">
-          <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-3">Official sources</p>
+        <div className="bg-ivory border border-sand/50 rounded-2xl p-5 mb-8">
+          <p className="text-walnut text-xs uppercase tracking-widest mb-3">Official sources</p>
           <div className="space-y-2">
             {answer.officialLinks.map(link => (
               <a
@@ -104,8 +103,8 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
 
       {/* Related links */}
       {answer.relatedLinks && answer.relatedLinks.length > 0 && (
-        <div className="bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl p-5 mb-8">
-          <p className="text-walnut dark:text-night-muted text-xs uppercase tracking-widest mb-3">Related tools and answers</p>
+        <div className="bg-ivory border border-sand/50 rounded-2xl p-5 mb-8">
+          <p className="text-walnut text-xs uppercase tracking-widest mb-3">Related tools and answers</p>
           <div className="space-y-2">
             {answer.relatedLinks.map(link => (
               <Link
@@ -121,25 +120,25 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
       )}
 
       {/* Helpful? */}
-      <div className="border border-sand/50 dark:border-night-border rounded-2xl p-5 mb-10">
-        <p className="text-sm text-espresso dark:text-night-text mb-3">Was this helpful?</p>
+      <div className="border border-sand/50 rounded-2xl p-5 mb-10">
+        <p className="text-sm text-espresso mb-3">Was this helpful?</p>
         {helpful === null ? (
           <div className="flex gap-3">
             <button
               onClick={() => markHelpful(true)}
-              className="px-5 py-2 rounded-full border border-sand dark:border-night-border text-sm text-walnut dark:text-night-muted hover:border-sage hover:text-sage transition-colors"
+              className="px-5 py-2 rounded-full border border-sand text-sm text-walnut hover:border-sage hover:text-sage transition-colors"
             >
               Yes
             </button>
             <button
               onClick={() => markHelpful(false)}
-              className="px-5 py-2 rounded-full border border-sand dark:border-night-border text-sm text-walnut dark:text-night-muted hover:border-coral hover:text-coral transition-colors"
+              className="px-5 py-2 rounded-full border border-sand text-sm text-walnut hover:border-coral hover:text-coral transition-colors"
             >
               Not really
             </button>
           </div>
         ) : (
-          <p className="text-sm text-walnut dark:text-night-muted">
+          <p className="text-sm text-walnut">
             {helpful ? 'Thank you for the feedback.' : 'Thanks — we will review this answer.'}
           </p>
         )}
@@ -148,7 +147,7 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
       {/* Related questions */}
       {relatedAnswers.length > 0 && (
         <div>
-          <h2 className="font-display text-xl font-semibold text-espresso dark:text-night-text mb-4">
+          <h2 className="font-display text-xl font-semibold text-espresso mb-4">
             More in {answer.category}
           </h2>
           <div className="space-y-3">
@@ -156,12 +155,12 @@ export function AnswerClient({ answer, relatedAnswers }: Props) {
               <Link
                 key={rel.slug}
                 href={`/answers/${rel.slug}`}
-                className="flex items-center justify-between px-5 py-4 bg-ivory dark:bg-night-1 border border-sand/50 dark:border-night-border rounded-2xl hover:border-terracotta/30 transition-colors group"
+                className="flex items-center justify-between px-5 py-4 bg-ivory border border-sand/50 rounded-2xl hover:border-terracotta/30 transition-colors group"
               >
-                <span className="text-sm text-espresso dark:text-night-text group-hover:text-terracotta transition-colors">
+                <span className="text-sm text-espresso group-hover:text-terracotta transition-colors">
                   {rel.title}
                 </span>
-                <span className="text-walnut dark:text-night-muted text-xs ml-4 shrink-0">{rel.readTime}</span>
+                <span className="text-walnut text-xs ml-4 shrink-0">{rel.readTime}</span>
               </Link>
             ))}
           </div>

@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 const FOOTER_SECTIONS = [
   {
@@ -35,24 +34,20 @@ const FOOTER_SECTIONS = [
 
 export function Footer() {
   return (
-    <footer className="bg-espresso text-cream dark:bg-night-1 dark:text-night-text">
+    <footer className="bg-espresso text-cream">
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
-          {/* Brand */}
           <div className="md:col-span-1">
-            <p className="font-display text-xl font-semibold mb-3">Brussels Navigator</p>
-            <p className="text-stone dark:text-night-muted text-sm leading-relaxed">
-              The community platform for Brussels expats. Tools, answers, events, and local connections.
+            <p className="font-display text-xl font-semibold mb-2">Bubl</p>
+            <p className="text-stone text-sm leading-relaxed mb-1">Your Brussels bubble.</p>
+            <p className="text-stone/70 text-sm leading-relaxed">
+              For everyone who lives here.
             </p>
-            <div className="mt-4">
-              <ThemeToggle className="text-stone dark:text-night-muted hover:text-cream dark:hover:text-night-text" />
-            </div>
           </div>
 
-          {/* Navigation sections */}
           {FOOTER_SECTIONS.map(section => (
             <div key={section.title}>
-              <p className="text-stone/60 dark:text-night-muted text-xs uppercase tracking-widest font-medium mb-3">
+              <p className="text-stone/60 text-xs uppercase tracking-widest font-medium mb-3">
                 {section.title}
               </p>
               <ul className="space-y-2">
@@ -60,7 +55,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-stone dark:text-night-muted text-sm hover:text-cream dark:hover:text-night-text transition-colors"
+                      className="text-stone text-sm hover:text-cream transition-colors link-hover"
                     >
                       {link.label}
                     </Link>
@@ -71,9 +66,9 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 pt-6 border-t border-white/10 dark:border-night-border">
-          <p className="text-stone/50 dark:text-night-muted text-xs leading-relaxed max-w-2xl">
-            Brussels Navigator provides information, not advice. Data verified March 2026. Always verify important administrative, legal, and financial information with official sources or qualified professionals.
+        <div className="mt-10 pt-6 border-t border-white/10">
+          <p className="text-stone/50 text-xs leading-relaxed max-w-2xl">
+            Bubl provides information, not advice. Always verify with official sources.
           </p>
         </div>
       </div>

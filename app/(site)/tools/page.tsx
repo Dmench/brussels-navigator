@@ -30,29 +30,39 @@ const TOOLS = [
 
 export default function ToolsPage() {
   return (
-    <div>
-      <p className="text-walnut text-xs uppercase tracking-widest mb-2">Tools</p>
-      <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-4">
-        Tools for getting settled
-      </h1>
-      <p className="text-walnut text-lg max-w-xl mb-10">
-        Practical tools for navigating Brussels life — from arrival to feeling at home.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {TOOLS.map(tool => (
-          <Link
-            key={tool.href}
-            href={tool.href}
-            className="group bg-ivory border border-sand/50 rounded-2xl p-6 hover:border-terracotta/30 transition-colors"
-          >
-            <h2 className="font-display text-xl font-semibold text-espresso mb-2 group-hover:text-terracotta transition-colors">
-              {tool.title}
-            </h2>
-            <p className="text-walnut text-sm leading-relaxed">{tool.desc}</p>
-          </Link>
-        ))}
+    <>
+      {/* Full-bleed gradient header */}
+      <div style={{ background: 'linear-gradient(135deg, #F7F4EE 0%, #C4CED8 50%, #A0B4C4 100%)' }} className="px-6 md:px-8 py-16 md:py-24">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Tools</p>
+          <h1 className="font-display text-4xl md:text-6xl font-extrabold text-espresso leading-tight">
+            Tools for getting settled
+          </h1>
+          <p className="text-walnut text-lg max-w-xl mt-4">
+            Practical tools for navigating Brussels life — from arrival to feeling at home.
+          </p>
+        </div>
       </div>
-    </div>
+      {/* Fade */}
+      <div style={{ height: 60, background: 'linear-gradient(to bottom, #A0B4C4, #FDFBF7)' }} />
+
+      {/* Main content */}
+      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {TOOLS.map(tool => (
+            <Link
+              key={tool.href}
+              href={tool.href}
+              className="group bg-white border border-sand/40 rounded-2xl p-6 hover:border-terracotta/40 hover:bg-[#FFFCF9] transition-colors"
+            >
+              <h2 className="font-display text-xl font-semibold text-espresso mb-2 group-hover:text-terracotta transition-colors">
+                {tool.title}
+              </h2>
+              <p className="text-walnut text-sm leading-relaxed">{tool.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
   )
 }

@@ -1,7 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SETUP_CHECKLIST } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/hooks/use-auth'
+import { supabase } from '@/lib/supabase'
 
 // Flatten all items for progress tracking
 const ALL_ITEMS = SETUP_CHECKLIST.flatMap(phase => phase.items.map(item => item.id))
@@ -27,24 +29,53 @@ function ChevronIcon({ open }: { open: boolean }) {
 }
 
 export default function ChecklistPage() {
-  const [completed, setCompleted] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return []
-    try {
-      return JSON.parse(localStorage.getItem('bubl-checklist') ?? '[]')
-    } catch { return [] }
-  })
+  const [completed, setCompleted] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const { user } = useAuth()
 
-  // Hydration-safe: use useEffect to read localStorage
-  if (typeof window !== 'undefined' && !mounted) {
+  // Load: merge localStorage + Supabase
+  useEffect(() => {
     setMounted(true)
-  }
+    let local: string[] = []
+    try { local = JSON.parse(localStorage.getItem('bubl-checklist') ?? '[]') } catch {}
 
+    if (user && supabase) {
+      supabase.from('checklist_progress')
+        .select('item_id, completed')
+        .eq('user_id', user.id)
+        .eq('completed', true)
+        .then(({ data }) => {
+          const remote = (data ?? []).map((r: any) => r.item_id as string)
+          const merged = Array.from(new Set([...local, ...remote]))
+          setCompleted(merged)
+          // sync local to remote
+          const onlyLocal = local.filter(id => !remote.includes(id))
+          if (onlyLocal.length > 0 && supabase) {
+            supabase.from('checklist_progress').upsert(
+              onlyLocal.map(id => ({ user_id: user.id, item_id: id, completed: true, completed_at: new Date().toISOString() }))
+            )
+          }
+        })
+    } else {
+      setCompleted(local)
+    }
+  }, [user])
+
+  // Toggle: localStorage + Supabase
   function toggle(id: string) {
     setCompleted(prev => {
-      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+      const isNowComplete = !prev.includes(id)
+      const next = isNowComplete ? [...prev, id] : prev.filter(x => x !== id)
       try { localStorage.setItem('bubl-checklist', JSON.stringify(next)) } catch {}
+      if (user && supabase) {
+        supabase.from('checklist_progress').upsert({
+          user_id: user.id,
+          item_id: id,
+          completed: isNowComplete,
+          completed_at: isNowComplete ? new Date().toISOString() : null,
+        })
+      }
       return next
     })
   }
@@ -57,7 +88,7 @@ export default function ChecklistPage() {
   const progressPct = Math.round((completedCount / TOTAL) * 100)
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 md:py-16">
       <p className="text-walnut text-xs uppercase tracking-widest mb-2">Tools</p>
       <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-4">
         Setup checklist

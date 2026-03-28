@@ -9,7 +9,7 @@ const BrusselsMap = dynamic(() => import('@/components/BrusselsMap'), {
 
 export default function MapPage() {
   return (
-    <div>
+    <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 md:py-16">
       <p className="text-walnut text-xs uppercase tracking-widest mb-2">Tools</p>
       <h1 className="font-display text-4xl md:text-5xl font-bold text-espresso mb-4">
         Interactive map

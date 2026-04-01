@@ -106,16 +106,17 @@ export default function ConnectPage() {
   return (
     <>
       {/* Full-bleed gradient header */}
-      <div style={{ background: 'linear-gradient(135deg, #F7F4EE 0%, #C9D5C4 50%, #A8C4A0 100%)' }} className="px-6 md:px-8 py-16 md:py-24">
+      <div style={{ background: 'linear-gradient(135deg, #F7F4EE 0%, #C9D5C4 50%, #A8C4A0 100%)' }} className="px-6 md:px-8 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
           <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Community</p>
-          <h1 className="font-display text-4xl md:text-6xl font-extrabold text-espresso leading-tight">
+          <h1 className="font-display text-3xl md:text-5xl font-extrabold text-espresso leading-tight">
             Connect
           </h1>
+          <p className="text-walnut text-sm mt-2 max-w-lg">Groups, meetups, and your neighbourhood board.</p>
         </div>
       </div>
       {/* Fade */}
-      <div style={{ height: 60, background: 'linear-gradient(to bottom, #A8C4A0, #FDFBF7)' }} />
+      <div style={{ height: 40, background: 'linear-gradient(to bottom, #A8C4A0, #FDFBF7)' }} />
 
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16">

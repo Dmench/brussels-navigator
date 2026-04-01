@@ -217,8 +217,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Fade */}
+      {/* Fade to cream */}
       <div style={{ height: 60, background: 'linear-gradient(to bottom, #E8B9A0, #FDFBF7)' }} />
+
+      {/* ── Brussels editorial photo strip ─────────────────────────────────── */}
+      <div className="relative w-full overflow-hidden" style={{ height: 200 }}>
+        <img
+          src="/images/grand-place.jpg"
+          alt="Grand Place, Brussels"
+          className="w-full h-full object-cover"
+          style={{ filter: 'saturate(0.62) brightness(0.9)', objectPosition: 'center 35%' }}
+        />
+        {/* Warm terracotta tint */}
+        <div className="absolute inset-0" style={{ background: 'rgba(196, 112, 75, 0.07)' }} />
+        {/* Top and bottom fade into cream */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #FDFBF7 0%, transparent 22%, transparent 78%, #FDFBF7 100%)' }} />
+      </div>
 
       {/* ── Start here ─────────────────────────────────────────────────────── */}
       <section className="px-6 md:px-8 py-12 md:py-16 max-w-6xl mx-auto w-full">

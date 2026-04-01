@@ -63,11 +63,22 @@ export default function ExplorePage() {
     <>
       {/* Full-bleed gradient header */}
       <div style={{ background: 'linear-gradient(135deg, #F7F4EE 0%, #E8D5C4 50%, #DBBFA8 100%)' }} className="px-6 md:px-8 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Explore Brussels</p>
-          <h1 className="font-display text-3xl md:text-5xl font-extrabold text-espresso leading-tight">
-            What is on
-          </h1>
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-8">
+          <div>
+            <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Explore Brussels</p>
+            <h1 className="font-display text-3xl md:text-5xl font-extrabold text-espresso leading-tight">
+              What is on
+            </h1>
+          </div>
+          {/* Flagey market accent photo — desktop only */}
+          <div className="hidden lg:block w-52 h-32 rounded-2xl overflow-hidden shrink-0 ring-1 ring-white/30">
+            <img
+              src="/images/flagey-market.jpg"
+              alt="Place Flagey, Ixelles"
+              className="w-full h-full object-cover"
+              style={{ filter: 'saturate(0.75) brightness(0.92)', objectPosition: 'center 60%' }}
+            />
+          </div>
         </div>
       </div>
       {/* Fade */}

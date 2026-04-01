@@ -63,11 +63,21 @@ export default function EventsPage() {
     <>
       {/* Full-bleed gradient header */}
       <div style={{ background: 'linear-gradient(135deg, #F7F4EE 0%, #D4C4B0 50%, #C4A882 100%)' }} className="px-6 md:px-8 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Calendar</p>
-          <h1 className="font-display text-3xl md:text-5xl font-extrabold text-espresso leading-tight">
-            What is on in Brussels
-          </h1>
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-8">
+          <div>
+            <p className="text-xs uppercase tracking-widest mb-2 text-walnut/70">Calendar</p>
+            <h1 className="font-display text-3xl md:text-5xl font-extrabold text-espresso leading-tight">
+              What is on in Brussels
+            </h1>
+          </div>
+          <div className="hidden lg:block w-52 h-32 rounded-2xl overflow-hidden shrink-0 ring-1 ring-white/30">
+            <img
+              src="/images/mont-des-arts.jpg"
+              alt="Mont des Arts, Brussels"
+              className="w-full h-full object-cover"
+              style={{ filter: 'saturate(0.7) brightness(0.88)', objectPosition: 'center 50%' }}
+            />
+          </div>
         </div>
       </div>
       {/* Fade */}
